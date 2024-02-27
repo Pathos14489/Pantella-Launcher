@@ -1,0 +1,171 @@
+{
+    "Game": {
+        "game_id": "skyrim"
+    },
+    "Paths": {
+        "game_path": "C:\\Games\\Steam\\steamapps\\common\\Skyrim Special Edition",
+        "mod_path": "C:\\Modding\\MO2\\mods\\Mantella",
+        "character_database_file": "./data/020224_skyrim_characters_hex_ids.csv",
+        "voice_model_ref_ids_file": "./skyrim_voice_model_ids.json",
+        "xvasynth_path": "C:\\Games\\Steam\\steamapps\\common\\xVASynth",
+        "xtts_server_folder": "C:\\Users\\User\\Desktop\\xtts-api-server",
+        "logging_file_path": "./logging.log",
+        "language_support_file_path": "./data/language_support.csv"
+    },
+    "Language": {
+        "language": "en",
+        "end_conversation_keyword": "Goodbye",
+        "goodbye_npc_response": "Safe travels",
+        "collecting_thoughts_npc_response": "I need to think for a moment."
+    },
+    "Microphone": {
+        "whisper_model": "base",
+        "stt_language": "default",
+        "stt_translate": false,
+        "whisper_process_device": "cpu",
+        "whisper_type": "faster_whisper",
+        "whisper_url": "http://127.0.0.1:8080/inference",
+        "audio_threshold": "auto",
+        "pause_threshold": 0.5,
+        "listen_timeout": 30,
+        "beam_size": 5,
+        "vad_filter": true
+    },
+    "LanguageModel": {
+        "inference_engine": "default",
+        "tokenizer_type": "default",
+        "prompt_style": "default",
+        "maximum_local_tokens": 4096,
+        "max_response_sentences": 999,
+        "wait_time_buffer": 0.5,
+        "stop": [
+            "<im_end>",
+            "\n<im_end>"
+        ],
+        "BOS_token": "<im_start>",
+        "EOS_token": "<im_end>",
+        "message_signifier": "\n",
+        "message_seperator": "\n",
+        "message_format": "[BOS_token][name][message_signifier][content][EOS_token][message_seperator]",
+        "system_name": "system",
+        "user_name": "user",
+        "assistant_name": "assistant",
+        "assist_check": true,
+        "strip_smalls": true,
+        "small_size": 3,
+        "same_output_limit": 30,
+        "conversation_limit_pct": 0.8,
+        "min_conversation_length": 5,
+        "reload_buffer": 8,
+        "reload_wait_time": 1
+    },
+    "InferenceOptions": {
+        "temperature": 0.7,
+        "top_p": 1,
+        "min_p": 0.05,
+        "typical_p": 1,
+        "top_k": 0,
+        "repeat_penalty": 1.0,
+        "tfs_z": 1.0,
+        "frequency_penalty": 0,
+        "presence_penalty": 0,
+        "mirostat_mode": 0,
+        "mirostat_eta": 5,
+        "mirostat_tau": 0.1,
+        "max_tokens": 512
+    },
+    "openai_api": {
+        "llm": "gpt-3.5-turbo-1106",
+        "alternative_openai_api_base": "none",
+        "secret_key_file_path": "./GPT_SECRET_KEY.txt"
+    },
+    "llama_cpp_python": {
+        "model_path": "./model.gguf",
+        "n_gpu_layers": 0,
+        "n_threads": 4,
+        "n_batch": 512,
+        "tensor_split": [
+            1.0
+        ],
+        "main_gpu": 0,
+        "split_mode": 0,
+        "use_mmap": true,
+        "use_mlock": false,
+        "n_threads_batch": 1,
+        "offload_kqv": true
+    },
+    "llava_cpp_python": {
+        "llava_clip_model_path": "./clip_model.gguf",
+        "ocr_lang": "en",
+        "ocr_use_angle_cls": true,
+        "ocr_filter": [
+            "Skyrim Special Edition",
+            "Fallout 4",
+            "E",
+            "Talk",
+            "Steal",
+            "Take",
+            "Use",
+            "Read",
+            "Open",
+            "Close",
+            "Activate",
+            "Search",
+            "Pick",
+            "Unlock",
+            "Lock",
+            "Sleep",
+            "Wait",
+            "Sit"
+        ],
+        "append_system_image_near_end": true,
+        "llava_image_message_depth": -1
+    },
+    "transformers": {
+        "transformers_model_slug": "mistralai/Mistral-7B-Instruct-v0.1",
+        "trust_remote_code": false,
+        "device_map": "cuda:0",
+        "load_in_8bit": false
+    },
+    "Speech": {
+        "tts_engine": "xvasynth",
+        "end_conversation_wait_time": 1,
+        "sentences_per_voiceline": 3
+    },
+    "xVASynth": {
+        "xvasynth_process_device": "cpu",
+        "pace": 1.0,
+        "use_cleanup": false,
+        "use_sr": false,
+        "xvasynth_base_url": "http://127.0.0.1:8008"
+    },
+    "xTTS": {
+        "xtts_base_url": "http://127.0.0.1:8020",
+        "xtts_data": {
+            "temperature": 0.75,
+            "length_penalty": 1.0,
+            "repetition_penalty": 3.0,
+            "top_k": 40,
+            "top_p": 0.8,
+            "speed": 1.2,
+            "enable_text_splitting": true,
+            "stream_chunk_size": 200
+        },
+        "default_xtts_model": "v2.0.2"
+    },
+    "Cleanup": {
+        "remove_mei_folders": false
+    },
+    "Debugging": {
+        "debug_mode": false,
+        "play_audio_from_script": false,
+        "debug_character_name": "Hulda",
+        "debug_use_mic": false,
+        "default_player_response": "Can you tell me something about yourself?",
+        "debug_exit_on_first_exchange": false,
+        "add_voicelines_to_all_voice_folders": false
+    },
+    "Config": {
+        "port": 8021
+    }
+}

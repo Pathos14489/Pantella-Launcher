@@ -1,0 +1,24 @@
+2024-02-27 10:47:41 ERROR| "config.json" does not exist! Creating default config file...
+2024-02-27 10:47:41 INFO| Config file saved to config.json
+2024-02-27 10:47:41 INFO| Getting prompt styles
+2024-02-27 10:47:41 ERROR| Error loading config:
+2024-02-27 10:47:41 ERROR| [WinError 3] The system cannot find the path specified: './prompt_styles'
+2024-02-27 10:48:23 INFO| Config file saved to config.json
+2024-02-27 10:48:23 INFO| Getting prompt styles
+2024-02-27 10:48:23 INFO| Prompt styles loaded: ['alpaca (Alpaca)', 'chat (Chat)', 'normal (Normal)', 'vision (Vision)']
+2024-02-27 10:48:23 ERROR| Game path does not exist: C:\Games\Steam\steamapps\common\Skyrim Special Edition
+2024-02-27 10:48:23 ERROR| xVASynth path does not exist: C:\Games\Steam\steamapps\common\xVASynth
+2024-02-27 10:48:23 ERROR| Mantella mod path does not exist: C:\Modding\MO2\mods\Mantella
+2024-02-27 10:48:23 ERROR| Error Creating Conversation Manager:
+2024-02-27 10:48:23 ERROR| [Errno 2] No such file or directory: './data/language_support.csv'
+2024-02-27 10:58:17 INFO| Config file saved to config.json
+2024-02-27 10:58:17 INFO| Getting prompt styles
+2024-02-27 10:58:17 INFO| Prompt styles loaded: ['alpaca (Alpaca)', 'chat (Chat)', 'normal (Normal)', 'vision (Vision)']
+2024-02-27 10:58:17 ERROR| Game path does not exist: C:/Games/Steam/steamapps/common/Skyrim Special Edition
+2024-02-27 10:58:17 ERROR| xVASynth path does not exist: C:/Games/Steam/steamapps/common/xVASynth
+2024-02-27 10:58:17 ERROR| Mantella mod path does not exist: C:/Modding/MO2/mods/Mantella
+2024-02-27 10:58:17 INFO| Conversation Manager Initialized
+2024-02-27 10:58:36 INFO| Config server running on port http://localhost:8021/
+2024-02-27 11:33:56 INFO| Config file saved to config.json
+2024-02-27 11:39:38 INFO| Config file saved to config.json
+2024-02-27 11:39:47 INFO| Config file saved to config.json

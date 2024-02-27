@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://dh5ipu2051dw5"]
+
+[ext_resource type="Script" path="res://PythonInterpreter.gd" id="1_7khek"]
+
+[node name="PythonInterpreter" type="Node"]
+script = ExtResource("1_7khek")

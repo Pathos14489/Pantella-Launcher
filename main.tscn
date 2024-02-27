@@ -1,9 +1,39 @@
-[gd_scene format=3 uid="uid://dsxwane2oefu"]
+[gd_scene load_steps=3 format=3 uid="uid://dsxwane2oefu"]
 
-[node name="Main" type="Control"]
+[ext_resource type="PackedScene" uid="uid://dh5ipu2051dw5" path="res://python_interpreter.tscn" id="1_sjw5x"]
+[ext_resource type="Script" path="res://repos.gd" id="3_0uige"]
+
+[node name="Root" type="Node"]
+
+[node name="PythonInterpreter" parent="." instance=ExtResource("1_sjw5x")]
+watchdogable = true
+
+[node name="UI" type="Control" parent="."]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="UI"]
+custom_minimum_size = Vector2(700, 300)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CenterContainer" type="CenterContainer" parent="UI/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="repos" type="VBoxContainer" parent="UI/ScrollContainer/CenterContainer"]
+layout_mode = 2
+script = ExtResource("3_0uige")
+
+[node name="HTTPRequest" type="HTTPRequest" parent="."]
+download_chunk_size = 131072
+use_threads = true

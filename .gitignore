@@ -1,2 +1,6 @@
 # Godot 4+ specific ignores
 .godot/
+repositories/*
+temp/*
+build/*
+python-3.10.11-embed/
