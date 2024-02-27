@@ -4,3 +4,4 @@ repositories/*
 temp/*
 build/*
 python-3.10.11-embed/
+logging.log

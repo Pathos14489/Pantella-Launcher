@@ -1,9 +1,11 @@
-[gd_scene load_steps=3 format=3 uid="uid://dsxwane2oefu"]
+[gd_scene load_steps=4 format=3 uid="uid://dsxwane2oefu"]
 
 [ext_resource type="PackedScene" uid="uid://dh5ipu2051dw5" path="res://python_interpreter.tscn" id="1_sjw5x"]
+[ext_resource type="Script" path="res://main.gd" id="1_y3wta"]
 [ext_resource type="Script" path="res://repos.gd" id="3_0uige"]
 
 [node name="Root" type="Node"]
+script = ExtResource("1_y3wta")
 
 [node name="PythonInterpreter" parent="." instance=ExtResource("1_sjw5x")]
 watchdogable = true
