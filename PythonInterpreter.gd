@@ -47,7 +47,6 @@ func run_script_from_dir(dir, script_path, console=true, watchdog=false):
 	if dir.ends_with("/"):
 		dir = dir.substr(0, dir.length() - 1)
 	script_path = dir + "/" + script_path
-	var module_path = script_path.replace("/", ".").split(":")[1].split(".py")[0]
 	var requirements = dir + "/requirements.txt"
 	# var args = ["/c", "cd", dir, ";", interpreter_path + " -m pip install -r " + requirements, ";", interpreter_path, module_path]
 	# print("CMD.exe", args, console)
