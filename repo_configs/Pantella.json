@@ -5,5 +5,9 @@
     "watchdog": true,
     "install_requirements": false,
     "entry_point": "main.py",
-    "args": []
+    "args": [],
+	"blacklist": [
+        "config.json",
+        "data"
+    ]
 }

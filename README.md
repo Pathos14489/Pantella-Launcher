@@ -41,5 +41,5 @@ This will install the package to the embedded python environment used by the lau
 Run the ./run_repo.py file in the command prompt to see the error messages. This will help you diagnose the issue and report it to the fork's repository. Here's an example of how to do this when running a command prompt in the Mantella_Launcher folder:
 
 ```
-python-3.10.11-embed/python.exe ./run_repo.py
+python-3.10.11-embed/python.exe ./run_repo.py "Git/Rename-This-Repo-Here"
 ```

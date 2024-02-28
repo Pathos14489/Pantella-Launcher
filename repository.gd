@@ -10,12 +10,13 @@ var repo = {
 	"description": "N/A",
 	"repo": "N/A",
 	"watchdog": false,
-	"entry_point": "N/A"
+	"entry_point": "N/A",
+	"blacklist": []
 }
 @export var script_path = "run_repo.py"
 @export var watchdog = false
 var PID = 0
-
+var installed = false
 var dir = "res://repositories/"+repo["repo"].replace("/", "_")
 
 func apply_repo(json):
@@ -34,6 +35,7 @@ func apply_repo(json):
 		dir = DIR + dir
 	var dir_access = DirAccess.open(dir)
 	if dir_access:
+		installed = true
 		get_node("HBoxContainer/Controls/Download").text = "Update"
 		get_node("HBoxContainer/Controls/Start").visible = true
 	else:
@@ -71,8 +73,22 @@ func download_completed(_status, _body, _headers, _code):
 	print(dir)
 	print(zip_path)
 	print(temp_path)
-	DirAccess.remove_absolute(dir)
-	DirAccess.make_dir_absolute(dir)
+	
+	# Clear everything but the filenames in repo["blacklist"] from the repo directory
+	if installed:
+		var dir_access = DirAccess.open(dir)
+		if dir_access:
+			dir_access.list_dir_begin()
+			while true:
+				var file = dir_access.get_next()
+				if file == "":
+					break
+				if file in repo["blacklist"]:
+					continue
+				OS.move_to_trash(dir + "/" + file)
+		else:
+			DirAccess.make_dir_absolute(dir)
+
 	OS.execute("tar", ["-xf", zip_path, "-C", temp_path])
 	# Move the extracted files from the "/"+repo["repo"].split("/")[1]+"-main/*" directory to the repositories directory
 	print(main_dir)
