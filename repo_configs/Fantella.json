@@ -1,0 +1,13 @@
+{
+    "name": "Mantella - Fallout 4",
+    "description": "Fork of Mantella that supports Fallout 4",
+    "repo": "YetAnotherModder /Mantella",
+    "watchdog": true,
+    "install_requirements": false,
+    "entry_point": "main.py",
+    "args": [],
+	"blacklist": [
+        "config.ini",
+        "data"
+    ]
+}
