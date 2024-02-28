@@ -24,3 +24,22 @@ Open the project.godot file, or import the project folder into the project manag
 ## llama-cpp-python Support
 
 If a repository uses this package, please install it using the included bat files. This is a requirement for some forks to run properly. If these forks have llama-cpp-python in their requirements.txt, it is recommended to disable automatic requirements.txt installation in the settings after the first run and overwrite the installed version with the included bat files for your setup if you're trying to use llama-cpp-python with a GPU.
+
+## Installing Additional Requirements
+
+If you need to manually install additional requirements, open a command prompt in the Mantella_Launcher folder and run the following command:
+
+
+```
+python-3.10.11-embed/python.exe -m pip instal PACKAGE_NAME
+```
+
+This will install the package to the embedded python environment used by the launcher. Installing dependencies any other way will not work.
+
+## Can't Read Error Messages
+
+Run the ./run_repo.py file in the command prompt to see the error messages. This will help you diagnose the issue and report it to the fork's repository. Here's an example of how to do this when running a command prompt in the Mantella_Launcher folder:
+
+```
+python-3.10.11-embed/python.exe ./run_repo.py
+```
