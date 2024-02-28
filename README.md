@@ -20,3 +20,7 @@ Download the latest release from the releases tab, or clone this repository and 
 ## Build from Source
 
 Open the project.godot file, or import the project folder into the project manager for Godot 4.2.2. Click Project>Export from the dropdown menu at the top left, then "Export All..." and finally Debug/Release depending on the type of build you're trying to make. The run_repo.py file can be edited without rebuilding the exe.
+
+## llama-cpp-python Support
+
+If a repository uses this package, please install it using the included bat files. This is a requirement for some forks to run properly. If these forks have llama-cpp-python in their requirements.txt, it is recommended to disable automatic requirements.txt installation in the settings after the first run and overwrite the installed version with the included bat files for your setup if you're trying to use llama-cpp-python with a GPU.
