@@ -2,7 +2,7 @@
 
 Launcher for easily running Mantella development branches from source in it's proper dev/production ready environment.
 
-[Screenshot]()
+[Screenshot](https://github.com/Pathos14489/Mantella-Launcher/blob/main/assets/example.png)
 
 ## How to Use
 
