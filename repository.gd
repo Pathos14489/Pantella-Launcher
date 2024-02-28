@@ -4,6 +4,7 @@ extends Panel
 var DIR = OS.get_executable_path().get_base_dir() + "/"
 
 var repo = {
+	"args": [],
 	"file_name": "N/A",
 	"name": "N/A",
 	"description": "N/A",
@@ -13,6 +14,7 @@ var repo = {
 }
 @export var script_path = "run_repo.py"
 @export var watchdog = false
+var PID = 0
 
 var dir = "res://repositories/"+repo["repo"].replace("/", "_")
 
@@ -30,6 +32,13 @@ func apply_repo(json):
 		dir = ProjectSettings.globalize_path(dir)
 	else:
 		dir = DIR + dir
+	var dir_access = DirAccess.open(dir)
+	if dir_access:
+		get_node("HBoxContainer/Controls/Download").text = "Update"
+		get_node("HBoxContainer/Controls/Start").visible = true
+	else:
+		get_node("HBoxContainer/Controls/Download").text = "Download"
+		get_node("HBoxContainer/Controls/Start").visible = false
 	print("Applied repo")
 
 func download_repo():
@@ -39,6 +48,10 @@ func download_repo():
 	http_request.download_file = path
 	http_request.request(url)
 	http_request.request_completed.connect(download_completed)
+	# Get all nodes in group download_buttons and disable them
+	var buttons = get_tree().get_nodes_in_group("download_buttons")
+	for button in buttons:
+		button.disabled = true
 	print("Downloaded repo")
 
 func download_completed(_status, _body, _headers, _code):
@@ -68,6 +81,11 @@ func download_completed(_status, _body, _headers, _code):
 	OS.move_to_trash(main_dir.replace("/*", ""))
 	OS.move_to_trash(zip_path)
 	print("Extracted zip")
+	var buttons = get_tree().get_nodes_in_group("download_buttons")
+	for button in buttons:
+		button.disabled = false
+	get_node("HBoxContainer/Controls/Download").text = "Update"
+	get_node("HBoxContainer/Controls/Start").visible = true
 
 func _ready():
 	if !OS.has_feature("standalone"):
@@ -76,8 +94,21 @@ func _ready():
 		dir = DIR + dir
 
 func start_repo():
+	if $HBoxContainer/Controls/Start.text == "Start":
+		$HBoxContainer/Controls/Start.text = "Stop"
+		_start_repo()
+	else:
+		$HBoxContainer/Controls/Start.text = "Start"
+		_stop_repo()
+
+func _start_repo():
 	print("Starting repo")
 	print(dir)
 	print(script_path)
-	python.run_script(script_path, ["\""+repo['repo']+"\"","\""+repo['entry_point']+"\""], true, watchdog)
+	PID = python.run_script(script_path, ["\""+repo['repo']+"\""], true, watchdog)
 	print("Started repo")
+
+func _stop_repo():
+	print("Stopping repo")
+	python.stop_PID(PID)
+	print("Stopped repo")

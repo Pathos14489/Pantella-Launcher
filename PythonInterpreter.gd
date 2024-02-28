@@ -27,13 +27,13 @@ func _ready():
 	print("Python interpreter path: " + interpreter_path)
 	interpreter_ready.emit()
 
-func run_script(script_path, args=[], console=true, watchdog=false):
+func run_script(script_path, script_args=[], console=true, watchdog=false):
 	print("Running Python script: " + script_path)
 	if !OS.has_feature("standalone"):
 		script_path = ProjectSettings.globalize_path("res://" + script_path)
 	else:
 		script_path = DIR + script_path
-	args = [script_path] + args
+	var args = [script_path] + script_args
 	var PID = OS.create_process(interpreter_path, args, console)
 	if watchdog:
 		watched_pids[PID] = [interpreter_path, args, console, watchdog]
@@ -115,6 +115,10 @@ func _process(delta):
 					print("Restarting process: " + str(PID))
 					var newPID = OS.create_process(ip, args, console)
 					watched_pids.erase(PID)
+					var repos = get_tree().get_nodes_in_group("repository")
+					for repo in repos:
+						if repo.PID == PID:
+							repo.PID = newPID
 					if watchdog:
 						watched_pids[newPID] = [interpreter_path, args, console, watchdog]
 						print("Watchdog enabled for process: " + str(newPID))
@@ -130,6 +134,7 @@ func stop():
 		print("Killed process: " + str(PID))
 
 func stop_PID(PID):
+	watched_pids.erase(PID)
 	if PID != null:
 		OS.kill(PID)
 		print("Killed process: " + str(PID))

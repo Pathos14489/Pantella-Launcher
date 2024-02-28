@@ -1,0 +1,9 @@
+{
+    "name": "Mantella - Vanilla",
+    "description": "Base Mantella dev repo, without any changes.",
+    "repo": "art-from-the-machine/Mantella",
+    "watchdog": true,
+    "install_requirements": false,
+    "entry_point": "main.py",
+    "args": []
+}

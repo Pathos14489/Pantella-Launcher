@@ -1,7 +1,9 @@
 {
     "name": "Mantella - Pathos' Fork",
-    "description": "Massive overhaul of the Mantella mod. xTTS Support, Local LLM integration, player name, race and sex awareness, Vision Support, and more!",
+    "description": "Massive overhaul of the Mantella mod. xTTS Support, Local LLM integration, player name, race and sex awareness, Vision Support, and more!\n\nRequires fork of plugin over here: https://github.com/Pathos14489/Mantella-Spell",
     "repo": "Pathos14489/Mantella",
     "watchdog": true,
-    "entry_point": "main.py"
+    "install_requirements": false,
+    "entry_point": "main.py",
+    "args": []
 }
