@@ -4,6 +4,15 @@ Launcher for easily running Mantella development branches from source in it's pr
 
 ![Screenshot](https://raw.githubusercontent.com/Pathos14489/Mantella-Launcher/main/assets/example.png)
 
+## Features
+ 
+- Download and run Mantella forks from source
+- Automatically update forks to the latest version when you're ready
+- Easily switch between forks
+- Easy to use interface
+- Don't have to install Python or any dependencies to run the Mantella server
+- Automatic Crash Recovery
+
 ## How to Use
 
 Download the latest release from the releases tab, or clone this repository and build from source. Run the Mantella_Launcher.exe, Download a fork and click Start to open Mantella. Please verify that all configuration settings are set in the fork you're trying to use before reporting a bug.
