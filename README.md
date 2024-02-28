@@ -19,7 +19,7 @@ Download the latest release from the releases tab, or clone this repository and 
 
 ## Build from Source
 
-Open the project.godot file, or import the project folder into the project manager for Godot 4.2.2. Click Project>Export from the dropdown menu at the top left, then "Export All..." and finally Debug/Release depending on the type of build you're trying to make. The run_repo.py file can be edited without rebuilding the exe.
+Open the project.godot file, or import the project folder into the project manager for Godot 4.2.1. Click Project>Export from the dropdown menu at the top left, then "Export All..." and finally Debug/Release depending on the type of build you're trying to make. The run_repo.py file can be edited without rebuilding the exe.
 
 ## llama-cpp-python Support
 
