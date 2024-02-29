@@ -1,8 +1,12 @@
-[gd_scene load_steps=4 format=3 uid="uid://dsxwane2oefu"]
+[gd_scene load_steps=6 format=3 uid="uid://dsxwane2oefu"]
 
 [ext_resource type="PackedScene" uid="uid://dh5ipu2051dw5" path="res://python_interpreter.tscn" id="1_sjw5x"]
 [ext_resource type="Script" path="res://main.gd" id="1_y3wta"]
 [ext_resource type="Script" path="res://repos.gd" id="3_0uige"]
+[ext_resource type="Texture2D" uid="uid://c7m523s77v86y" path="res://ML_background.png" id="3_3ji7s"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_oex1w"]
+texture = ExtResource("3_3ji7s")
 
 [node name="Root" type="Node"]
 script = ExtResource("1_y3wta")
@@ -10,13 +14,13 @@ script = ExtResource("1_y3wta")
 [node name="PythonInterpreter" parent="." instance=ExtResource("1_sjw5x")]
 watchdogable = true
 
-[node name="UI" type="Control" parent="."]
-layout_mode = 3
+[node name="UI" type="Panel" parent="."]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_oex1w")
 
 [node name="ScrollContainer" type="ScrollContainer" parent="UI"]
 custom_minimum_size = Vector2(700, 300)
@@ -27,14 +31,24 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="CenterContainer" type="CenterContainer" parent="UI/ScrollContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/ScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="repos" type="VBoxContainer" parent="UI/ScrollContainer/CenterContainer"]
+[node name="Label" type="Label" parent="UI/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="CenterContainer" type="CenterContainer" parent="UI/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="repos" type="VBoxContainer" parent="UI/ScrollContainer/VBoxContainer/CenterContainer"]
 layout_mode = 2
 script = ExtResource("3_0uige")
+
+[node name="Label2" type="Label" parent="UI/ScrollContainer/VBoxContainer"]
+layout_mode = 2
 
 [node name="HTTPRequest" type="HTTPRequest" parent="."]
 download_chunk_size = 131072

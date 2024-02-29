@@ -128,3 +128,8 @@ func _stop_repo():
 	print("Stopping repo")
 	python.stop_PID(PID)
 	print("Stopped repo")
+
+
+func _on_info_resized():
+	custom_minimum_size.y = $HBoxContainer/Info.size.y + 50
+	

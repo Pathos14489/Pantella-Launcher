@@ -10,9 +10,11 @@ config_version=5
 
 [application]
 
-config/name="Mantella Launcher - v0.0.2"
+config/name="Mantella Launcher - v0.0.3"
+config/description="Launcher for easily running Mantella development branches from source in it's proper dev/production ready environment."
 run/main_scene="res://main.tscn"
 config/features=PackedStringArray("4.2", "Forward Plus")
 run/low_processor_mode=true
 boot_splash/bg_color=Color(0.0980392, 0.0980392, 0.0980392, 1)
+boot_splash/show_image=false
 config/icon="res://icon.svg"

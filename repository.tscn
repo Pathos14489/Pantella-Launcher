@@ -1,54 +1,66 @@
-[gd_scene load_steps=2 format=3 uid="uid://dno35d53whpnp"]
+[gd_scene load_steps=4 format=3 uid="uid://dno35d53whpnp"]
 
+[ext_resource type="Texture2D" uid="uid://c4ag5jty02gg4" path="res://Info Card Tall.png" id="1_fjcax"]
 [ext_resource type="Script" path="res://repository.gd" id="1_v4ypf"]
 
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_gp4yx"]
+texture = ExtResource("1_fjcax")
+texture_margin_left = 29.0
+texture_margin_top = 29.0
+texture_margin_right = 29.0
+texture_margin_bottom = 29.0
+
 [node name="repository" type="Panel" groups=["repository"]]
-custom_minimum_size = Vector2(700, 300)
+custom_minimum_size = Vector2(700, 100)
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -20.0
-offset_top = -20.0
-offset_right = 20.0
-offset_bottom = 20.0
+offset_left = -350.0
+offset_top = -50.0
+offset_right = 350.0
+offset_bottom = 50.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 6
 size_flags_vertical = 6
+theme_override_styles/panel = SubResource("StyleBoxTexture_gp4yx")
 script = ExtResource("1_v4ypf")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
+anchors_preset = -1
+anchor_left = 0.05
+anchor_top = 0.103333
+anchor_right = 0.941429
+anchor_bottom = 0.873333
 grow_horizontal = 2
 grow_vertical = 2
 metadata/_edit_use_anchors_ = true
 
 [node name="Info" type="VBoxContainer" parent="HBoxContainer"]
 clip_contents = true
-custom_minimum_size = Vector2(350, 0)
+custom_minimum_size = Vector2(500, 0)
 layout_mode = 2
+size_flags_vertical = 4
 
 [node name="Title" type="Label" parent="HBoxContainer/Info"]
-custom_minimum_size = Vector2(350, 0)
+custom_minimum_size = Vector2(500, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 text = "Title"
 autowrap_mode = 3
 
 [node name="Repo" type="Label" parent="HBoxContainer/Info"]
-custom_minimum_size = Vector2(350, 0)
+custom_minimum_size = Vector2(500, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 text = "Repo"
 autowrap_mode = 3
 
 [node name="Desc" type="Label" parent="HBoxContainer/Info"]
-custom_minimum_size = Vector2(350, 0)
+custom_minimum_size = Vector2(500, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 text = "Desc"
@@ -57,6 +69,7 @@ autowrap_mode = 3
 [node name="Controls" type="VBoxContainer" parent="HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+size_flags_vertical = 4
 alignment = 1
 
 [node name="Download" type="Button" parent="HBoxContainer/Controls" groups=["download_buttons"]]
@@ -67,5 +80,6 @@ text = "Download"
 layout_mode = 2
 text = "Start"
 
+[connection signal="resized" from="HBoxContainer/Info" to="." method="_on_info_resized"]
 [connection signal="pressed" from="HBoxContainer/Controls/Download" to="." method="download_repo"]
 [connection signal="pressed" from="HBoxContainer/Controls/Start" to="." method="start_repo"]
