@@ -15,7 +15,11 @@ Launcher for easily running Mantella development branches from source in it's pr
 
 ## How to Use
 
-Download the latest release from the releases tab, or clone this repository and build from source. Run the Mantella_Launcher.exe, Download a fork and click Start to open Mantella. Please verify that all configuration settings are set in the fork you're trying to use before reporting a bug.
+Download the latest release from the releases tab, or clone this repository and build from source. Unzip the release, and run the Mantella_Launcher.exe. Download a fork and click Start to open Mantella. Please verify that all configuration settings are set in the fork you're trying to use before reporting a bug.
+
+### Warning:
+
+Install on the same drive as your Mod Organizer 2 mods folder, or you will be writing and rewriting files to your drive constantly. This can cause damage to your drive over time, especially on SSDs.
 
 ## Build from Source
 
@@ -31,7 +35,7 @@ If you need to manually install additional requirements, open a command prompt i
 
 
 ```
-python-3.10.11-embed/python.exe -m pip instal PACKAGE_NAME
+python-3.10.11-embed/python.exe -m pip install PACKAGE_NAME
 ```
 
 This will install the package to the embedded python environment used by the launcher. Installing dependencies any other way will not work.
