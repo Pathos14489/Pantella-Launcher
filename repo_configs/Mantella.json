@@ -1,0 +1,21 @@
+{
+    "args": [],
+    "blacklist": [
+        "config.ini",
+        "data"
+    ],
+    "description": "The Original Mantella dev repository. Works with basic features, mostly bug free, primarily built towards OpenAI chat completions with prompt styling in mind. Supports other OpenAI emulations as well. Slower release cycle, but more stable.",
+    "entry_point": "main.py",
+    "file_name": "Mantella.json",
+    "install_requirements": false,
+    "name": "Mantella",
+    "plugins": [
+        {
+            "name": "Start",
+            "repo": "art-from-the-machine/Mantella-Spell"
+        }
+    ],
+    "color": "darkgreen",
+    "repo": "art-from-the-machine/Mantella",
+    "watchdog": true
+}
