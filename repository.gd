@@ -216,12 +216,17 @@ func _on_button_pressed(): # When selected, visible = false for all other reposi
 		button.repo = self
 		plugins_menu.get_node("VBoxContainer/Panel3/VBoxContainer/Plugins").add_child(button)
 		
+		
 func plugin_selected(plugin): # from plugin button
-	if active == true:
-		_stop_repo()
+	print("Plugin selected")
+	if "plugin_path" not in root.settings or root.settings["plugin_path"] == "":
+		status_bar.text = "Please set the plugin path in the settings"
 	else:
-		root.plugin_selected(plugin)
-		_start_repo()
+		if active == true:
+			_stop_repo()
+		else:
+			root.plugin_selected(plugin)
+			_start_repo()
 
 func save_repo():
 	var file = FileAccess.open("res://repo_configs/"+repo["file_name"], FileAccess.WRITE)

@@ -1,8 +1,11 @@
 extends Button
 
+@onready var root = get_tree().root.get_child(0)
+
 var plugin = {
 	"name":"",
-	"repo":""
+	"repo":"",
+	"plugin_path":""
 }
 
 var repo = null
@@ -17,4 +20,5 @@ func _on_pressed():
 
 func _ready():
 	text = plugin["name"]
-	repo = get_node("/root/Repo")
+	if "plugin_path" not in root.settings or root.settings["plugin_path"] == "":
+		disabled = true
