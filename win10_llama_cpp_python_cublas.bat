@@ -1,6 +1,6 @@
 @echo off
 setlocal
-set CMAKE_ARGS=-DLLAMA_SYCL=on -DCMAKE_C_COMPILER=icx -DCMAKE_CXX_COMPILER=icpx
+set CMAKE_ARGS=-DLLAMA_CUBLAS=on 
 set FORCE_CMAKE=1
 set CUDA_VERSION=
 for /f "tokens=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 delims= " %%a in ('nvcc --version') do (
