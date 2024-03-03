@@ -7,6 +7,8 @@ extends Panel
 
 @onready var plugins_button = preload("res://plugin_button.tscn") # TODO: Probably a bad idea to have every repo preload this, but will fix later when not sleep deprived. move to the plugin node prolly
 
+signal download_extracted
+
 var DIR = OS.get_executable_path().get_base_dir() + "/"
 
 var repo = {
@@ -77,7 +79,7 @@ func download_repo():
 		"repo": repo["repo"],
 		"name": repo["name"],
 	}
-	await http_request.request_completed # Wait for repo download to complete
+	await download_extracted # Wait for repo download to complete
 	status_bar.text = "Downloading " + repo["name"] + " Plugins..."
 	for plugin in repo["plugins"]:
 		var plugin_url = "https://github.com/" + plugin["repo"] + "/archive/refs/heads/main.zip"
@@ -85,8 +87,8 @@ func download_repo():
 		http_request.download_file = plugin_path
 		http_request.request(plugin_url)
 		current_download = plugin
-		status_bar.text = "Downloaded " + current_download["name"] + ", extracting..."
-		await http_request.request_completed # Wait for plugin download to complete
+		status_bar.text = "Downloading " + current_download["repo"] + "..."
+		await download_extracted # Wait for plugin download to complete
 	for button in buttons:
 		button.disabled = false
 	get_node("HBoxContainer/Controls/Download").text = "Update"
@@ -97,6 +99,7 @@ func download_repo():
 
 func download_completed(_status, _body, _headers, _code):
 	print("Download completed")
+	status_bar.text = "Downloaded " + current_download["repo"] + ", extracting..."
 	print(http_request.download_file)
 	print(current_download)
 	# Check if repo directory exists, if not create it
@@ -135,6 +138,7 @@ func download_completed(_status, _body, _headers, _code):
 	OS.move_to_trash(main_dir.replace("/*", ""))
 	OS.move_to_trash(zip_path)
 	status_bar.text = "Extracted " + repo["name"] + ", ready to start"
+	download_extracted.emit()
 	print("Extracted zip")
 
 func _ready():
@@ -196,25 +200,26 @@ func _on_info_resized():
 	custom_minimum_size.y = $HBoxContainer/Info.size.y + 50
 	
 func _on_button_pressed(): # When selected, visible = false for all other repositories download and start buttons
-	plugins_menu.visible = true
-	plugins_menu.get_node("VBoxContainer/Panel2/Label3").text = repo["name"]
-	plugins_menu.get_node("VBoxContainer/Panel2/Label3").self_modulate = Color.from_string(repo["color"], Color.WHITE)
 	var repositories = get_tree().get_nodes_in_group("repository")
 	for repository in repositories:
 		if repository != self:
 			repository.get_node("HBoxContainer/Controls/Download").visible = false
 			# repository.get_node("HBoxContainer/Controls/Start").visible = false
 	self.get_node("HBoxContainer/Controls/Download").visible = true
-	# if installed:
-		# self.get_node("HBoxContainer/Controls/Start").visible = true
-	# remove all child nodes from plugins_menu.get_node("VBoxContainer/Panel/Plugins")
-	for child in plugins_menu.get_node("VBoxContainer/Panel3/VBoxContainer/Plugins").get_children():
-		child.queue_free()
-	for plugin in repo["plugins"]:
-		var button = plugins_button.instantiate()
-		button.plugin = plugin
-		button.repo = self
-		plugins_menu.get_node("VBoxContainer/Panel3/VBoxContainer/Plugins").add_child(button)
+	if installed:
+		plugins_menu.visible = true
+		plugins_menu.get_node("VBoxContainer/Panel2/Label3").text = repo["name"]
+		plugins_menu.get_node("VBoxContainer/Panel2/Label3").self_modulate = Color.from_string(repo["color"], Color.WHITE)
+		# if installed:
+			# self.get_node("HBoxContainer/Controls/Start").visible = true
+		# remove all child nodes from plugins_menu.get_node("VBoxContainer/Panel/Plugins")
+		for child in plugins_menu.get_node("VBoxContainer/Panel3/VBoxContainer/Plugins").get_children():
+			child.queue_free()
+		for plugin in repo["plugins"]:
+			var button = plugins_button.instantiate()
+			button.plugin = plugin
+			button.repo = self
+			plugins_menu.get_node("VBoxContainer/Panel3/VBoxContainer/Plugins").add_child(button)
 		
 		
 func plugin_selected(plugin): # from plugin button
@@ -222,9 +227,9 @@ func plugin_selected(plugin): # from plugin button
 	if "plugin_path" not in root.settings or root.settings["plugin_path"] == "":
 		status_bar.text = "Please set the plugin path in the settings"
 	else:
-		if active == true:
+		if active == true: # If the repo is running, stop it
 			_stop_repo()
-		else:
+		else: # If the repo is not running, start it
 			root.plugin_selected(plugin)
 			_start_repo()
 
