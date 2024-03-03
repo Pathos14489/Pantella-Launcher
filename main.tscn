@@ -1,16 +1,19 @@
-[gd_scene load_steps=13 format=3 uid="uid://dsxwane2oefu"]
+[gd_scene load_steps=16 format=3 uid="uid://dsxwane2oefu"]
 
 [ext_resource type="PackedScene" uid="uid://dh5ipu2051dw5" path="res://python_interpreter.tscn" id="1_sjw5x"]
 [ext_resource type="Script" path="res://main.gd" id="1_y3wta"]
 [ext_resource type="Script" path="res://repos.gd" id="3_0uige"]
 [ext_resource type="Texture2D" uid="uid://c7m523s77v86y" path="res://ML_background.png" id="3_3ji7s"]
 [ext_resource type="StyleBox" uid="uid://8ougcqv66tu6" path="res://skybox.tres" id="4_uhq8h"]
+[ext_resource type="Script" path="res://SettingsPanel.gd" id="6_fxvkt"]
 [ext_resource type="Script" path="res://PathLabel.gd" id="6_inrxu"]
 [ext_resource type="Script" path="res://PluginDirDialog.gd" id="6_sqx30"]
 [ext_resource type="Script" path="res://CrashCheckBox.gd" id="7_4aa5k"]
 [ext_resource type="Script" path="res://Label3.gd" id="7_4lel4"]
 [ext_resource type="Script" path="res://DebugCheckBox.gd" id="8_jdlnm"]
 [ext_resource type="Script" path="res://resizer.gd" id="9_ddayg"]
+[ext_resource type="Script" path="res://UndeployButton.gd" id="10_l243b"]
+[ext_resource type="Script" path="res://StartLastButton.gd" id="11_ukytf"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_oex1w"]
 texture = ExtResource("3_3ji7s")
@@ -145,20 +148,23 @@ text = "Settings"
 horizontal_alignment = 1
 
 [node name="SettingsPanel" type="Panel" parent="UI/ScrollContainer2/VBoxContainer"]
-custom_minimum_size = Vector2(0, 189.205)
+custom_minimum_size = Vector2(0, 294.9)
 layout_mode = 2
 size_flags_vertical = 4
 theme_override_styles/panel = ExtResource("4_uhq8h")
+script = ExtResource("6_fxvkt")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="UI/ScrollContainer2/VBoxContainer/SettingsPanel"]
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 24.0
-offset_top = 29.0
-offset_right = -24.0
-offset_bottom = -24.02
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -121.0
+offset_top = -96.5
+offset_right = 121.0
+offset_bottom = 96.5
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -181,6 +187,7 @@ text = "Please set your plugin path!"
 script = ExtResource("7_4lel4")
 
 [node name="Label2" type="Label" parent="UI/ScrollContainer2/VBoxContainer/SettingsPanel/VBoxContainer"]
+custom_minimum_size = Vector2(242.85, 0)
 layout_mode = 2
 text = "Automatic Crash Recovery"
 
@@ -221,6 +228,30 @@ grow_vertical = 2
 size_flags_horizontal = 8
 button_pressed = true
 script = ExtResource("8_jdlnm")
+
+[node name="Label5" type="Label" parent="UI/ScrollContainer2/VBoxContainer/SettingsPanel/VBoxContainer"]
+layout_mode = 2
+
+[node name="StartLastButton" type="Button" parent="UI/ScrollContainer2/VBoxContainer/SettingsPanel/VBoxContainer"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 6
+tooltip_text = "Start last Mantella used."
+text = "Start (???)"
+script = ExtResource("11_ukytf")
+
+[node name="UndeployButton" type="Button" parent="UI/ScrollContainer2/VBoxContainer/SettingsPanel/VBoxContainer"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 6
+tooltip_text = "Undeploy last deployed plugin."
+text = "Undeploy"
+script = ExtResource("10_l243b")
+
+[node name="Label6" type="Label" parent="UI/ScrollContainer2/VBoxContainer/SettingsPanel/VBoxContainer"]
+layout_mode = 2
 
 [node name="PluginsMenu" type="Control" parent="UI/ScrollContainer2/VBoxContainer"]
 visible = false
@@ -310,10 +341,18 @@ use_threads = true
 [connection signal="settings_loaded" from="." to="UI/ScrollContainer2/VBoxContainer/SettingsPanel/VBoxContainer/Label3" method="_on_root_settings_loaded"]
 [connection signal="settings_loaded" from="." to="UI/ScrollContainer2/VBoxContainer/SettingsPanel/VBoxContainer/Label2/CrashCheckBox" method="_on_root_settings_loaded"]
 [connection signal="settings_loaded" from="." to="UI/ScrollContainer2/VBoxContainer/SettingsPanel/VBoxContainer/Label4/DebugCheckBox" method="_on_root_settings_loaded"]
+[connection signal="settings_loaded" from="." to="UI/ScrollContainer2/VBoxContainer/SettingsPanel/VBoxContainer/UndeployButton" method="_on_root_settings_loaded"]
+[connection signal="settings_loaded" from="." to="UI/ScrollContainer2/VBoxContainer/SettingsPanel/VBoxContainer/StartLastButton" method="_on_root_settings_loaded"]
 [connection signal="pressed" from="UI/Button" to="." method="_on_button_pressed"]
+[connection signal="resized" from="UI/ScrollContainer2/VBoxContainer/SettingsPanel" to="UI/ScrollContainer2/VBoxContainer/SettingsPanel" method="_on_resized"]
+[connection signal="resized" from="UI/ScrollContainer2/VBoxContainer/SettingsPanel/VBoxContainer" to="UI/ScrollContainer2/VBoxContainer/SettingsPanel" method="_on_resized"]
 [connection signal="pressed" from="UI/ScrollContainer2/VBoxContainer/SettingsPanel/VBoxContainer/PathLabel" to="PluginDirDialog" method="_on_path_label_pressed"]
 [connection signal="toggled" from="UI/ScrollContainer2/VBoxContainer/SettingsPanel/VBoxContainer/Label2/CrashCheckBox" to="UI/ScrollContainer2/VBoxContainer/SettingsPanel/VBoxContainer/Label2/CrashCheckBox" method="_on_toggled"]
 [connection signal="toggled" from="UI/ScrollContainer2/VBoxContainer/SettingsPanel/VBoxContainer/Label4/DebugCheckBox" to="UI/ScrollContainer2/VBoxContainer/SettingsPanel/VBoxContainer/Label4/DebugCheckBox" method="_on_toggled"]
+[connection signal="pressed" from="UI/ScrollContainer2/VBoxContainer/SettingsPanel/VBoxContainer/StartLastButton" to="UI/ScrollContainer2/VBoxContainer/SettingsPanel/VBoxContainer/StartLastButton" method="_on_pressed"]
+[connection signal="pressed" from="UI/ScrollContainer2/VBoxContainer/SettingsPanel/VBoxContainer/UndeployButton" to="." method="_on_undeploy_button_pressed"]
+[connection signal="pressed" from="UI/ScrollContainer2/VBoxContainer/SettingsPanel/VBoxContainer/UndeployButton" to="UI/ScrollContainer2/VBoxContainer/SettingsPanel/VBoxContainer/UndeployButton" method="_on_pressed"]
+[connection signal="pressed" from="UI/ScrollContainer2/VBoxContainer/SettingsPanel/VBoxContainer/UndeployButton" to="UI/ScrollContainer2/VBoxContainer/SettingsPanel/VBoxContainer/StartLastButton" method="_on_undeploy_button_pressed"]
 [connection signal="resized" from="UI/ScrollContainer2/VBoxContainer/PluginsMenu/VBoxContainer/Panel3/VBoxContainer" to="UI/ScrollContainer2/VBoxContainer/PluginsMenu/VBoxContainer/Panel3" method="_on_resized"]
 [connection signal="resized" from="UI/ScrollContainer2/VBoxContainer/PluginsMenu/VBoxContainer/Panel3/VBoxContainer/Plugins" to="UI/ScrollContainer2/VBoxContainer/PluginsMenu/VBoxContainer/Panel3" method="_on_resized"]
 [connection signal="dir_selected" from="PluginDirDialog" to="UI/ScrollContainer2/VBoxContainer/SettingsPanel/VBoxContainer/Label3" method="_on_plugin_dir_dialog_dir_selected"]
