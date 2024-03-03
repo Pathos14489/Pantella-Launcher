@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://bushnesgcipkr"]
+
+[ext_resource type="Script" path="res://plugin_button.gd" id="1_6bq5e"]
+
+[node name="PluginButton" type="Button" groups=["plugin"]]
+text = "Plugin"
+script = ExtResource("1_6bq5e")
+
+[connection signal="pressed" from="." to="." method="_on_pressed"]

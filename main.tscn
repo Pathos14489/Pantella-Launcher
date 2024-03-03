@@ -1,9 +1,16 @@
-[gd_scene load_steps=6 format=3 uid="uid://dsxwane2oefu"]
+[gd_scene load_steps=13 format=3 uid="uid://dsxwane2oefu"]
 
 [ext_resource type="PackedScene" uid="uid://dh5ipu2051dw5" path="res://python_interpreter.tscn" id="1_sjw5x"]
 [ext_resource type="Script" path="res://main.gd" id="1_y3wta"]
 [ext_resource type="Script" path="res://repos.gd" id="3_0uige"]
 [ext_resource type="Texture2D" uid="uid://c7m523s77v86y" path="res://ML_background.png" id="3_3ji7s"]
+[ext_resource type="StyleBox" uid="uid://8ougcqv66tu6" path="res://skybox.tres" id="4_uhq8h"]
+[ext_resource type="Script" path="res://PathLabel.gd" id="6_inrxu"]
+[ext_resource type="Script" path="res://PluginDirDialog.gd" id="6_sqx30"]
+[ext_resource type="Script" path="res://CrashCheckBox.gd" id="7_4aa5k"]
+[ext_resource type="Script" path="res://Label3.gd" id="7_4lel4"]
+[ext_resource type="Script" path="res://DebugCheckBox.gd" id="8_jdlnm"]
+[ext_resource type="Script" path="res://resizer.gd" id="9_ddayg"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_oex1w"]
 texture = ExtResource("3_3ji7s")
@@ -22,22 +29,64 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_oex1w")
 
-[node name="ScrollContainer" type="ScrollContainer" parent="UI"]
-custom_minimum_size = Vector2(700, 300)
+[node name="Button" type="Button" parent="UI"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = -8.0
+offset_top = -8.0
+offset_right = 8.0
+offset_bottom = 8.0
 grow_horizontal = 2
 grow_vertical = 2
+flat = true
+
+[node name="ScrollContainer" type="ScrollContainer" parent="UI"]
+custom_minimum_size = Vector2(700, 300)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.021
+anchor_right = 0.701
+anchor_bottom = 1.0
+offset_left = -0.192001
+offset_right = 0.447937
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+horizontal_scroll_mode = 3
+vertical_scroll_mode = 3
 
 [node name="VBoxContainer" type="VBoxContainer" parent="UI/ScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+mouse_filter = 2
 
 [node name="Label" type="Label" parent="UI/ScrollContainer/VBoxContainer"]
 layout_mode = 2
+
+[node name="Panel" type="Panel" parent="UI/ScrollContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 53)
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_styles/panel = ExtResource("4_uhq8h")
+
+[node name="StatusBar" type="Label" parent="UI/ScrollContainer/VBoxContainer/Panel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -416.0
+offset_top = -11.5
+offset_right = 416.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "? Forks"
+horizontal_alignment = 1
 
 [node name="CenterContainer" type="CenterContainer" parent="UI/ScrollContainer/VBoxContainer"]
 layout_mode = 2
@@ -50,6 +99,222 @@ script = ExtResource("3_0uige")
 [node name="Label2" type="Label" parent="UI/ScrollContainer/VBoxContainer"]
 layout_mode = 2
 
+[node name="ScrollContainer2" type="ScrollContainer" parent="UI"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.722
+anchor_right = 0.979
+anchor_bottom = 1.0
+offset_left = 0.25592
+offset_right = 0.192017
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+horizontal_scroll_mode = 3
+vertical_scroll_mode = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/ScrollContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="Label" type="Label" parent="UI/ScrollContainer2/VBoxContainer"]
+layout_mode = 2
+
+[node name="Panel" type="Panel" parent="UI/ScrollContainer2/VBoxContainer"]
+custom_minimum_size = Vector2(0, 53)
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_styles/panel = ExtResource("4_uhq8h")
+
+[node name="Label3" type="Label" parent="UI/ScrollContainer2/VBoxContainer/Panel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -416.0
+offset_top = -11.5
+offset_right = 416.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "Settings"
+horizontal_alignment = 1
+
+[node name="SettingsPanel" type="Panel" parent="UI/ScrollContainer2/VBoxContainer"]
+custom_minimum_size = Vector2(0, 189.205)
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_styles/panel = ExtResource("4_uhq8h")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/ScrollContainer2/VBoxContainer/SettingsPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_top = 29.0
+offset_right = -24.0
+offset_bottom = -24.02
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="UI/ScrollContainer2/VBoxContainer/SettingsPanel/VBoxContainer"]
+layout_mode = 2
+text = "Plugin Path
+"
+
+[node name="PathLabel" type="Button" parent="UI/ScrollContainer2/VBoxContainer/SettingsPanel/VBoxContainer"]
+layout_mode = 2
+tooltip_text = "Path to the plugin directory in your MO2 mods folder. If you don't have a Mantella-Spell folder already installed, please create an empty mod in MO2 by right-clicking in the mods list, and under \"All Mods\" click \"Create Empty Mod Above\" to create an empty mod directory. Use that here for plugin management."
+text = "C:/path/to/plugin/directory"
+text_overrun_behavior = 4
+script = ExtResource("6_inrxu")
+
+[node name="Label3" type="Label" parent="UI/ScrollContainer2/VBoxContainer/SettingsPanel/VBoxContainer"]
+self_modulate = Color(1, 0, 0, 1)
+layout_mode = 2
+text = "Please set your plugin path!"
+script = ExtResource("7_4lel4")
+
+[node name="Label2" type="Label" parent="UI/ScrollContainer2/VBoxContainer/SettingsPanel/VBoxContainer"]
+layout_mode = 2
+text = "Automatic Crash Recovery"
+
+[node name="CrashCheckBox" type="CheckBox" parent="UI/ScrollContainer2/VBoxContainer/SettingsPanel/VBoxContainer/Label2"]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -24.0
+offset_top = -12.0
+offset_bottom = 12.0
+grow_horizontal = 0
+grow_vertical = 2
+size_flags_horizontal = 8
+button_pressed = true
+script = ExtResource("7_4aa5k")
+
+[node name="Label4" type="Label" parent="UI/ScrollContainer2/VBoxContainer/SettingsPanel/VBoxContainer"]
+layout_mode = 2
+tooltip_text = "Highly recommended so you know when it's ready, whether it's crashing, etc. But if you're confident in your setup, you can disable the console with this."
+mouse_filter = 1
+text = "Show Debug Console"
+
+[node name="DebugCheckBox" type="CheckBox" parent="UI/ScrollContainer2/VBoxContainer/SettingsPanel/VBoxContainer/Label4"]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -24.0
+offset_top = -12.0
+offset_bottom = 12.0
+grow_horizontal = 0
+grow_vertical = 2
+size_flags_horizontal = 8
+button_pressed = true
+script = ExtResource("8_jdlnm")
+
+[node name="PluginsMenu" type="Control" parent="UI/ScrollContainer2/VBoxContainer"]
+visible = false
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/ScrollContainer2/VBoxContainer/PluginsMenu"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 53.0
+grow_horizontal = 2
+
+[node name="Panel2" type="Panel" parent="UI/ScrollContainer2/VBoxContainer/PluginsMenu/VBoxContainer"]
+custom_minimum_size = Vector2(0, 53)
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_styles/panel = ExtResource("4_uhq8h")
+
+[node name="Label3" type="Label" parent="UI/ScrollContainer2/VBoxContainer/PluginsMenu/VBoxContainer/Panel2"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -416.0
+offset_top = -11.5
+offset_right = 416.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "Plugins"
+horizontal_alignment = 1
+
+[node name="Panel3" type="Panel" parent="UI/ScrollContainer2/VBoxContainer/PluginsMenu/VBoxContainer"]
+custom_minimum_size = Vector2(0, 53)
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_styles/panel = ExtResource("4_uhq8h")
+script = ExtResource("9_ddayg")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/ScrollContainer2/VBoxContainer/PluginsMenu/VBoxContainer/Panel3"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -105.5
+offset_top = -39.5
+offset_right = 105.5
+offset_bottom = 39.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="UI/ScrollContainer2/VBoxContainer/PluginsMenu/VBoxContainer/Panel3/VBoxContainer"]
+visible = false
+custom_minimum_size = Vector2(211.935, 0)
+layout_mode = 2
+text = "Plugin Options"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Plugins" type="VBoxContainer" parent="UI/ScrollContainer2/VBoxContainer/PluginsMenu/VBoxContainer/Panel3/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 6
+
+[node name="Label2" type="Label" parent="UI/ScrollContainer2/VBoxContainer"]
+layout_mode = 2
+
+[node name="PluginDirDialog" type="FileDialog" parent="."]
+title = "Open a Directory"
+initial_position = 1
+size = Vector2i(794, 519)
+ok_button_text = "Select Current Folder"
+dialog_close_on_escape = false
+file_mode = 2
+access = 2
+script = ExtResource("6_sqx30")
+
 [node name="HTTPRequest" type="HTTPRequest" parent="."]
 download_chunk_size = 131072
 use_threads = true
+
+[connection signal="settings_loaded" from="." to="UI/ScrollContainer2/VBoxContainer/SettingsPanel/VBoxContainer/PathLabel" method="_on_root_settings_loaded"]
+[connection signal="settings_loaded" from="." to="UI/ScrollContainer2/VBoxContainer/SettingsPanel/VBoxContainer/Label3" method="_on_root_settings_loaded"]
+[connection signal="settings_loaded" from="." to="UI/ScrollContainer2/VBoxContainer/SettingsPanel/VBoxContainer/Label2/CrashCheckBox" method="_on_root_settings_loaded"]
+[connection signal="settings_loaded" from="." to="UI/ScrollContainer2/VBoxContainer/SettingsPanel/VBoxContainer/Label4/DebugCheckBox" method="_on_root_settings_loaded"]
+[connection signal="pressed" from="UI/Button" to="." method="_on_button_pressed"]
+[connection signal="pressed" from="UI/ScrollContainer2/VBoxContainer/SettingsPanel/VBoxContainer/PathLabel" to="PluginDirDialog" method="_on_path_label_pressed"]
+[connection signal="toggled" from="UI/ScrollContainer2/VBoxContainer/SettingsPanel/VBoxContainer/Label2/CrashCheckBox" to="UI/ScrollContainer2/VBoxContainer/SettingsPanel/VBoxContainer/Label2/CrashCheckBox" method="_on_toggled"]
+[connection signal="toggled" from="UI/ScrollContainer2/VBoxContainer/SettingsPanel/VBoxContainer/Label4/DebugCheckBox" to="UI/ScrollContainer2/VBoxContainer/SettingsPanel/VBoxContainer/Label4/DebugCheckBox" method="_on_toggled"]
+[connection signal="resized" from="UI/ScrollContainer2/VBoxContainer/PluginsMenu/VBoxContainer/Panel3/VBoxContainer" to="UI/ScrollContainer2/VBoxContainer/PluginsMenu/VBoxContainer/Panel3" method="_on_resized"]
+[connection signal="resized" from="UI/ScrollContainer2/VBoxContainer/PluginsMenu/VBoxContainer/Panel3/VBoxContainer/Plugins" to="UI/ScrollContainer2/VBoxContainer/PluginsMenu/VBoxContainer/Panel3" method="_on_resized"]
+[connection signal="dir_selected" from="PluginDirDialog" to="UI/ScrollContainer2/VBoxContainer/SettingsPanel/VBoxContainer/Label3" method="_on_plugin_dir_dialog_dir_selected"]
+[connection signal="dir_selected" from="PluginDirDialog" to="PluginDirDialog" method="_on_dir_selected"]

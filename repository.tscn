@@ -1,16 +1,13 @@
 [gd_scene load_steps=4 format=3 uid="uid://dno35d53whpnp"]
 
-[ext_resource type="Texture2D" uid="uid://c4ag5jty02gg4" path="res://Info Card Tall.png" id="1_fjcax"]
+[ext_resource type="StyleBox" uid="uid://8ougcqv66tu6" path="res://skybox.tres" id="1_8vsu3"]
 [ext_resource type="Script" path="res://repository.gd" id="1_v4ypf"]
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_gp4yx"]
-texture = ExtResource("1_fjcax")
-texture_margin_left = 29.0
-texture_margin_top = 29.0
-texture_margin_right = 29.0
-texture_margin_bottom = 29.0
+[sub_resource type="LabelSettings" id="LabelSettings_8j4w0"]
+font_size = 26
 
 [node name="repository" type="Panel" groups=["repository"]]
+clip_children = 2
 custom_minimum_size = Vector2(700, 100)
 anchors_preset = 8
 anchor_left = 0.5
@@ -25,8 +22,21 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 6
 size_flags_vertical = 6
-theme_override_styles/panel = SubResource("StyleBoxTexture_gp4yx")
+theme_override_styles/panel = ExtResource("1_8vsu3")
 script = ExtResource("1_v4ypf")
+
+[node name="Button" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 9.0
+offset_top = 8.0
+offset_right = -9.0
+offset_bottom = -9.0
+grow_horizontal = 2
+grow_vertical = 2
+flat = true
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 1
@@ -37,6 +47,7 @@ anchor_right = 0.941429
 anchor_bottom = 0.873333
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 metadata/_edit_use_anchors_ = true
 
 [node name="Info" type="VBoxContainer" parent="HBoxContainer"]
@@ -44,12 +55,14 @@ clip_contents = true
 custom_minimum_size = Vector2(500, 0)
 layout_mode = 2
 size_flags_vertical = 4
+mouse_filter = 2
 
 [node name="Title" type="Label" parent="HBoxContainer/Info"]
 custom_minimum_size = Vector2(500, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 text = "Title"
+label_settings = SubResource("LabelSettings_8j4w0")
 autowrap_mode = 3
 
 [node name="Repo" type="Label" parent="HBoxContainer/Info"]
@@ -73,13 +86,16 @@ size_flags_vertical = 4
 alignment = 1
 
 [node name="Download" type="Button" parent="HBoxContainer/Controls" groups=["download_buttons"]]
+visible = false
 layout_mode = 2
 text = "Download"
 
-[node name="Start" type="Button" parent="HBoxContainer/Controls"]
+[node name="Start" type="Button" parent="HBoxContainer/Controls" groups=["start_button"]]
+visible = false
 layout_mode = 2
 text = "Start"
 
+[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
 [connection signal="resized" from="HBoxContainer/Info" to="." method="_on_info_resized"]
 [connection signal="pressed" from="HBoxContainer/Controls/Download" to="." method="download_repo"]
 [connection signal="pressed" from="HBoxContainer/Controls/Start" to="." method="start_repo"]
