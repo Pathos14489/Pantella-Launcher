@@ -5,7 +5,10 @@ var DIR = OS.get_executable_path().get_base_dir() + "/"
 @export var repo_configs_dir = "res://repo_configs/"
 @export var temp_dir = "res://temp/"
 @export var settings_file = "res://launcher_settings.json"
-
+@onready var plugins_menu = get_tree().root.get_child(0).get_node("UI/ScrollContainer2/VBoxContainer/PluginsMenu")
+@onready var status_bar = $UI/ScrollContainer/VBoxContainer/Panel/StatusBar
+@onready var start_last_button = $UI/ScrollContainer2/VBoxContainer/SettingsPanel/VBoxContainer/StartLastButton
+@onready var repos = $UI/ScrollContainer/VBoxContainer/CenterContainer/repos
 
 var settings = {
 	"plugin_path":"",
@@ -13,7 +16,8 @@ var settings = {
 	"debug_console": true,
 	"last_loaded_plugin": {
 		"name": "",
-		"repo": ""
+		"repo": "",
+		"plugin_path": ""
 	}
 }
 
@@ -52,7 +56,8 @@ func _ready():
 	repositories_dir_access.list_dir_begin()
 	var file_name = repositories_dir_access.get_next()
 	while file_name != "":
-		installed_configs += 1
+		if not file_name.ends_with(".ini"):
+			installed_configs += 1
 		file_name = repositories_dir_access.get_next()
 	# Count how many repositories are in the directory
 	var repo_configs_diraccess = DirAccess.open(repo_configs_dir)
@@ -65,11 +70,11 @@ func _ready():
 			var data = config.get_as_text()
 			var config_data = JSON.parse_string(data)
 			config.close()
-			for plugin in config_data:
+			for plugin in config_data["plugins"]:
 				available_configs += 1
 			file_name = repo_configs_diraccess.get_next()
 	# Update the status bar
-	$UI/ScrollContainer/VBoxContainer/Panel/StatusBar.text = "Loaded " + str(installed_configs) + " of " + str(available_configs) + " available configurations."
+	status_bar.text = "Loaded " + str(installed_configs) + " of " + str(available_configs) + " available configurations."
 	# Load settings
 	if FileAccess.file_exists(settings_file):
 		var file = FileAccess.open(settings_file, FileAccess.READ)
@@ -121,3 +126,15 @@ func plugin_selected(plugin):
 		# Update the last_loaded_plugin setting
 		update_setting("last_loaded_plugin", plugin)
 		
+func _on_button_pressed(): # Background clicked
+	pass
+	# plugins_menu.visible = false
+	# var download_buttons = get_tree().get_nodes_in_group("download_buttons")
+	# for button in download_buttons:
+	# 	button.visible = false
+	
+func _on_undeploy_button_pressed(): # unload last plugin
+	status_bar.text = "Unloading "+settings["last_loaded_plugin"]["name"]+"..."
+	var last_plugin_dir = repositories_dir + settings["last_loaded_plugin"]["repo"].replace("/", "_")
+	OS.execute("powershell.exe", ["mv", get_plugin_path()+"*", last_plugin_dir])
+	update_setting("last_loaded_plugin", {"name": "", "repo": ""})
