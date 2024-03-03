@@ -16,7 +16,7 @@ func _on_root_settings_loaded():
 	visible = false
 	if "last_loaded_plugin" in root.settings and root.settings["last_loaded_plugin"]["name"] != "":
 		plugin = root.settings["last_loaded_plugin"]
-		if plugin != null:
+		if plugin["name"] != "":
 			for repo in root.repos.get_children():
 				for plgin in repo.repo["plugins"]:
 					if plgin == plugin:
