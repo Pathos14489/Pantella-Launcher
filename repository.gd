@@ -80,20 +80,27 @@ func check_for_updates(force=false):
 	var repo_api_url = "https://api.github.com/repos/" + repo["repo"] + "/commits"
 	var new_commit_info_path = "res://temp/" + repo["repo"].replace("/", "_") + ".json"
 	var old_commit_info_path = "res://install_info/" + repo["repo"].replace("/", "_") + ".json"
-	$GithubHTTPRequest.download_file = new_commit_info_path
-	# if file already exists, remove it
-	if FileAccess.file_exists(new_commit_info_path):
-		OS.move_to_trash(new_commit_info_path)
+	var already_downloaded = false
+	if FileAccess.file_exists(old_commit_info_path):
+		already_downloaded = true
+		$GithubHTTPRequest.download_file = new_commit_info_path
+		# if file already exists, remove it
+		if FileAccess.file_exists(new_commit_info_path):
+			OS.move_to_trash(new_commit_info_path)
+	else:
+		$GithubHTTPRequest.download_file = old_commit_info_path
+	await $GithubHTTPRequest/OffsetTimer.timeout
 	$GithubHTTPRequest.request(repo_api_url)
 	await $GithubHTTPRequest.request_completed
-	var new_commit_info = JSON.parse_string(FileAccess.open(new_commit_info_path, FileAccess.READ).get_as_text())[0]
-	var old_commit_info = JSON.parse_string(FileAccess.open(old_commit_info_path, FileAccess.READ).get_as_text())[0]
 	get_node("RepoPanel/VBoxContainer/HBoxContainer/Controls/Download").text = "No Updates Available"
 	get_node("RepoPanel/VBoxContainer/HBoxContainer/Controls/Download").visible = false
-	if old_commit_info["sha"] != new_commit_info["sha"]:
-		print("New commit found")
-		get_node("RepoPanel/VBoxContainer/HBoxContainer/Controls/Download").text = "Update"
-		get_node("RepoPanel/VBoxContainer/HBoxContainer/Controls/Download").visible = true
+	if already_downloaded:
+		var new_commit_info = JSON.parse_string(FileAccess.open(new_commit_info_path, FileAccess.READ).get_as_text())[0]
+		var old_commit_info = JSON.parse_string(FileAccess.open(old_commit_info_path, FileAccess.READ).get_as_text())[0]
+		if old_commit_info["sha"] != new_commit_info["sha"]:
+			print("New commit found")
+			get_node("RepoPanel/VBoxContainer/HBoxContainer/Controls/Download").text = "Update"
+			get_node("RepoPanel/VBoxContainer/HBoxContainer/Controls/Download").visible = true
 	repo["last_checked_for_updates"] = current_timestamp
 	save_repo()
 
@@ -104,6 +111,7 @@ func check_for_updates(force=false):
 		var new_plugin_commit_info_path = "res://temp/" + plugin["repo"].replace("/", "_") + ".json"
 		var old_plugin_commit_info_path = "res://install_info/" + plugin["repo"].replace("/", "_") + ".json"
 		$GithubHTTPRequest.download_file = new_plugin_commit_info_path
+		await $GithubHTTPRequest/OffsetTimer.timeout
 		$GithubHTTPRequest.request(plugin_api_url)
 		await $GithubHTTPRequest.request_completed
 		var new_plugin_commit_info = JSON.parse_string(FileAccess.open(new_plugin_commit_info_path, FileAccess.READ).get_as_text())[0]
@@ -130,13 +138,14 @@ func populate_plugins_list():
 				plugins_list.add_child(button)
 
 func download_repo():
-	print("Downloading repo")
+	print("Downloading latest repo")
+	root.show_spinner()
 	# Get all nodes in group download_buttons and disable them - this is to prevent multiple downloads at the same time
 	var buttons = get_tree().get_nodes_in_group("download_buttons")
 	for button in buttons:
 		button.disabled = true
 	get_node("RepoPanel/VBoxContainer/HBoxContainer/Controls/Download").text = "Downloading..."
-	status_bar.text = "Downloading " + repo["name"] + " Backend..."
+	status_bar.text = "Downloading " + repo["repo"] + "..."
 	
 	var update_repo = false
 	var repo_already_installed = false
@@ -147,9 +156,12 @@ func download_repo():
 	if FileAccess.file_exists(commit_info_path):
 		$GithubHTTPRequest.download_file = temp_commit_info_path
 		repo_already_installed = true
+		print("Repo already installed")
 	else:
 		$GithubHTTPRequest.download_file = commit_info_path
 		update_repo = true
+		print("Repo not installed -- downloading commit info")
+	await $GithubHTTPRequest/OffsetTimer.timeout
 	$GithubHTTPRequest.request(repo_api_url)
 	await $GithubHTTPRequest.request_completed
 	
@@ -205,6 +217,7 @@ func download_repo():
 		else: # If the plugin is not installed, download the commit info to the install_info directory
 			$GithubHTTPRequest.download_file = plugin_commit_info_path
 			plugin_download = true
+		await $GithubHTTPRequest/OffsetTimer.timeout
 		$GithubHTTPRequest.request(plugin_repo_api_url)
 		await $GithubHTTPRequest.request_completed
 			
@@ -228,6 +241,7 @@ func download_repo():
 	get_node("RepoPanel/VBoxContainer/HBoxContainer/Controls/Download").visible = false
 	# get_node("RepoPanel/VBoxContainer/HBoxContainer/Controls/Start").visible = true
 	installed = true
+	root.hide_spinner()
 	repo_download_finished.emit()
 
 func download_completed(_status, _body, _headers, _code):
@@ -270,7 +284,7 @@ func download_completed(_status, _body, _headers, _code):
 	# Remove the temp directory
 	OS.move_to_trash(main_dir.replace("/*", ""))
 	OS.move_to_trash(zip_path)
-	status_bar.text = "Extracted " + repo["name"] + ", ready to start"
+	status_bar.text = "Extracted " + current_download["name"] + "..."
 	download_extracted.emit()
 	print("Extracted zip")
 
@@ -349,6 +363,7 @@ func save_repo():
 func _on_repo_download_finished():
 	populate_plugins_list()
 	$RepoPanel/VBoxContainer/HBoxContainer/Controls/Start.visible = true
+	status_bar.text = "Finished downloading " + repo["name"] + ", please configure the repo and start it"
 
 
 func start_repo():

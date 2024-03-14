@@ -1,9 +1,10 @@
-[gd_scene load_steps=7 format=3 uid="uid://dno35d53whpnp"]
+[gd_scene load_steps=8 format=3 uid="uid://dno35d53whpnp"]
 
 [ext_resource type="StyleBox" uid="uid://8ougcqv66tu6" path="res://skybox.tres" id="1_8vsu3"]
 [ext_resource type="Script" path="res://repository.gd" id="1_v4ypf"]
 [ext_resource type="Script" path="res://RepoPanel.gd" id="3_5i45t"]
 [ext_resource type="Script" path="res://RepoStart.gd" id="4_rresv"]
+[ext_resource type="Script" path="res://OffsetTimer.gd" id="5_yxppp"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_8j4w0"]
 font_size = 26
@@ -105,6 +106,12 @@ script = ExtResource("4_rresv")
 layout_mode = 2
 
 [node name="GithubHTTPRequest" type="HTTPRequest" parent="."]
+
+[node name="OffsetTimer" type="Timer" parent="GithubHTTPRequest"]
+autostart = true
+script = ExtResource("5_yxppp")
+min_time = 3.0
+max_time = 15.0
 
 [connection signal="repo_download_finished" from="." to="." method="_on_repo_download_finished"]
 [connection signal="resized" from="RepoPanel/VBoxContainer" to="RepoPanel" method="_on_info_resized"]

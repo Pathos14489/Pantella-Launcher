@@ -156,3 +156,9 @@ func _a_plugin_undeployed():
 func _on_update_button_pressed():
 	for repo in get_tree().get_nodes_in_group("repository"):
 		repo.check_for_updates(true)
+
+func show_spinner():
+	$UI/StatusBarPanel/Hotbar/Spinner.visible = true
+	
+func hide_spinner():
+	$UI/StatusBarPanel/Hotbar/Spinner.visible = false

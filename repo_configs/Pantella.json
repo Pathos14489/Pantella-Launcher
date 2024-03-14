@@ -12,8 +12,8 @@
 	"entry_point": "main.py",
 	"file_name": "Pantella.json",
 	"install_requirements": false,
-	"last_checked_for_updates": 1710426642.656,
-	"last_updated": 1710332485.998,
+	"last_checked_for_updates": 0,
+	"last_updated": 0,
 	"name": "Pantella",
 	"plugins": [
 		{

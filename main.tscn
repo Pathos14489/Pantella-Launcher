@@ -91,7 +91,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 text_overrun_behavior = 4
 
-[node name="UpdateButton" type="Button" parent="UI/StatusBarPanel/Hotbar"]
+[node name="UpdateButton" type="Button" parent="UI/StatusBarPanel/Hotbar" groups=["download_buttons"]]
 custom_minimum_size = Vector2(36, 36)
 layout_mode = 2
 tooltip_text = "Force check for updates for all repos and plugins"

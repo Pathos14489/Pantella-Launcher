@@ -63,7 +63,7 @@ func _ready():
 func _on_plugin_active():
 	installed = false
 	$HBoxContainer/InstallButton.disabled = false
-	$HBoxContainer/InstallButton.text = "Install"
+	$HBoxContainer/InstallButton.text = "Deploy"
 	$HBoxContainer/UndeployButton.disabled = true
 	$HBoxContainer/UndeployButton.visible = false
 	var mod_organizer_dir = DirAccess.open(mod_organizer_path)
@@ -77,10 +77,11 @@ func _on_install_button_pressed():
 	var mod_manager_dir = DirAccess.open(mod_organizer_path)
 	if !mod_manager_dir.dir_exists(plugin_path):
 		mod_manager_dir.make_dir(plugin_path)
-	print("Copying " + source_path + " to " + plugin_path+"/"+plugin["repo"].replace("/", "_"))
-	OS.execute("powershell.exe", ["Copy-Item", "-Recurse", source_path+"/", plugin_path])
+	source_path = "\""+source_path+"/\""
+	print("Copying " + source_path + " to " + plugin_path+plugin["repo"].replace("/", "_"))
+	OS.execute("powershell.exe", ["Copy-Item", "-Recurse", source_path.replace(" ","' '"), "\""+plugin_path.replace(" ","' '")+"\""])
 	# copy commit history
-	OS.execute("powershell.exe", ["Copy-Item", plugin_commit_history_path, plugin_path+"/"+plugin["repo"].replace("/", "_")+"/commit_history.json"])
+	OS.execute("powershell.exe", ["Copy-Item", "\""+plugin_commit_history_path+"\"".replace(" ","' '"), "\""+plugin_path+plugin["repo"].replace("/", "_").replace(" ","' '")+"/commit_history.json"+"\""])
 	for patch in plugin["patches"]: # Extract patches from res://plugin_patches/{patch} to the plugin folder
 		var patch_path = "res://plugin_patches/" + patch
 		if !OS.has_feature("standalone"):
@@ -88,12 +89,12 @@ func _on_install_button_pressed():
 		else:
 			patch_path = DIR + patch_path.replace("res://", "")
 		print("Patching " + patch_path + " to " + plugin_path+"/"+plugin["repo"].replace("/", "_"))
-		OS.execute("tar", ["-xf", patch_path, "-C", plugin_path+"/"+plugin["repo"].replace("/", "_")])
+		OS.execute("tar", ["-xf", "\""+patch_path+"\"", "-C", "\""+plugin_path+"/"+plugin["repo"].replace("/", "_")+"\""])
 	plugin_installed.emit()
 
 func _on_plugin_installed():
 	installed = true
-	$HBoxContainer/InstallButton.text = "Installed"
+	$HBoxContainer/InstallButton.text = "Deployed"
 	$HBoxContainer/InstallButton.disabled = true
 	$HBoxContainer/UndeployButton.disabled = false
 	$HBoxContainer/UndeployButton.visible = true
@@ -109,7 +110,7 @@ func _repo_updated():
 
 	$HBoxContainer/UndeployButton.disabled = false
 	$HBoxContainer/UndeployButton.visible = true
-	$HBoxContainer/InstallButton.text = "Installed"
+	$HBoxContainer/InstallButton.text = "Deployed"
 
 func undeploy():
 	if !installed:
@@ -117,7 +118,7 @@ func undeploy():
 	$HBoxContainer/InstallButton.text = "Uninstalling..."
 	OS.move_to_trash(plugin_path + "/" + plugin["repo"].replace("/", "_")) # move plugin to trash
 	$HBoxContainer/InstallButton.disabled = false
-	$HBoxContainer/InstallButton.text = "Install"
+	$HBoxContainer/InstallButton.text = "Deploy"
 	$HBoxContainer/UndeployButton.disabled = true
 	$HBoxContainer/UndeployButton.visible = false
 	plugin_active.emit()
