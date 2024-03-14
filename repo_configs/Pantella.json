@@ -1,21 +1,32 @@
 {
-    "args": [],
-    "blacklist": [
-        "config.json",
-        "data"
-    ],
-    "color": "pink",
-    "description": "Massive overhaul of the Mantella mod. xTTS Support, Custom Prompt Formats/Styles, Advanced Behavior System and NPC Scripting API, Proper Local LLM integration, player name, race and sex awareness, Vision Support via LLaVA, and more!\n\nCan be buggier than Mantella, but is more feature rich and has a faster development cycle.",
-    "entry_point": "main.py",
-    "file_name": "Pantella.json",
-    "install_requirements": false,
-    "name": "Pantella",
-    "plugins": [
-        {
-            "name": "Start",
-            "repo": "Pathos14489/Pantella-Spell"
-        }
-    ],
-    "repo": "Pathos14489/Pantella",
-    "watchdog": true
+	"args": [],
+	"blacklist": [
+		"config.json",
+		"data"
+	],
+	"color": "pink",
+	"config_files": [
+		"config.json"
+	],
+	"description": "Massive overhaul of the Mantella mod. Accented xTTS Support, Customizable Multi-Language Support, Custom Prompt Formats/Styles, Advanced Behavior System and NPC Scripting API, Proper Local LLM integration, player name, race and sex awareness, Vision Support via LLaVA, and more! Can be buggier than Mantella, but is more feature rich and has a faster development cycle.\n\nOpenAI API is supported, but primary focus is on llama-cpp-python support. Also has native transformers support.\n\nSupports: Skyrim SE/AE and Skyrim VR",
+	"entry_point": "main.py",
+	"file_name": "Pantella.json",
+	"install_requirements": false,
+	"last_checked_for_updates": 1710426642.656,
+	"last_updated": 1710332485.998,
+	"name": "Pantella",
+	"plugins": [
+		{
+			"blacklist": [],
+			"games": [
+				"skyrim",
+				"skyrimvr"
+			],
+			"name": "Pantella-Spell",
+			"patches": [],
+			"repo": "Pathos14489/Pantella-Spell"
+		}
+	],
+	"repo": "Pathos14489/Pantella",
+	"watchdog": true
 }
