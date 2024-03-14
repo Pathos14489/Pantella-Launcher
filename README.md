@@ -8,15 +8,16 @@ Launcher for easily running Mantella development branches from source in it's pr
 ## Features
  
 - Download and run Mantella forks from source
-- Automatically update forks to the latest version when you're ready
-- Easily switch between forks
+- Automatically get notified of new updates and update forks to the latest version when you're ready
+- Easily switch between forks, games and plugins with Mantella and other repositories
 - Easy to use interface
-- Don't have to install Python or any dependencies to run the Mantella server
+- Don't have to install Python or any dependencies to run the Mantella server, it comes with an embedded Python environment and all the dependencies it needs to run Mantella and Pantella out of the box
 - Automatic Crash Recovery
+- Easily manage Mantella repositories across multiple games and mod managers
 
 ## How to Use
 
-Download the latest release from the releases tab, or clone this repository and build from source. Unzip the release, and run the Mantella_Launcher.exe. Download a fork and click Start to open Mantella. Please verify that all configuration settings are set in the fork you're trying to use before reporting a bug.
+Download the latest release from the releases tab, or clone this repository and build from source. Unzip the release following the instructions in the release notes, and run the Pantella_Launcher.exe. Download a fork and click Start to open Mantella/Pantella. After downloading and deploying a repository, please verify that all configuration settings are set in the repository you're trying to use before reporting a bug. Mantella uses config.ini and Pantella uses config.json/webUI settings. If you're having trouble with a repository, please report the issue to the repository's issue tracker unless this is an issue with the launcher itself.
 
 ### Warning:
 
@@ -28,7 +29,7 @@ Open the project.godot file, or import the project folder into the project manag
 
 ## llama-cpp-python Support
 
-If a repository uses this package, please install it using the included bat files. This is a requirement for some forks to run properly. If these forks have llama-cpp-python in their requirements.txt, it is recommended to disable automatic requirements.txt installation in the settings after the first run and overwrite the installed version with the included bat files for your setup if you're trying to use llama-cpp-python with a GPU.
+If a repository uses this package and you intend to use it, please install it using the included bat files. This is a requirement for some forks to run properly. If these forks have llama-cpp-python in their requirements.txt, it is recommended to disable automatic requirements.txt installation in the settings after the first run and overwrite the installed version with the included bat files for your setup if you're trying to use llama-cpp-python with a GPU.
 
 ## Installing Additional Requirements
 
@@ -43,8 +44,9 @@ This will install the package to the embedded python environment used by the lau
 
 ## Can't Read Error Messages
 
-Run the ./run_repo.py file in the command prompt to see the error messages. This will help you diagnose the issue and report it to the fork's repository. Here's an example of how to do this when running a command prompt in the Mantella_Launcher folder:
+Run the ./run_repo.py file in the command prompt to see the error messages. This will help you diagnose the issue and report it to the fork's issue tracker. Here's an example of how to do this when running a command prompt in the Mantella_Launcher folder:
 
 ```
 python-3.10.11-embed/python.exe ./run_repo.py "Git/Rename-This-Repo-Here"
 ```
+Above is the way that the launcher itself will run the script, but you can also run it manually if you have python installed on your system and the correct depdenencies installed. Or you can directly run the Mantella script using the embedded python. The command prompt will show you the error messages that you can use to diagnose the issue and report it to the fork's issue tracker. The launcher itself also has a log file, and most Mantella forks also have a logging.log file as well.
