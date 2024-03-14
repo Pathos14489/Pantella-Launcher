@@ -10,13 +10,16 @@ var plugin = {
 var repository = null
 
 func _on_root_settings_loaded():
-	visible = false
+	disabled = true
 	if "last_loaded_plugin" in root.settings and root.settings["last_loaded_plugin"]["name"] != "":
 		plugin = root.settings["last_loaded_plugin"]
 	if plugin["name"] != "":
-		visible = true
+		disabled = false
 	else:
-		visible = false
+		disabled = true
 
 func _on_pressed():
-	visible = false
+	disabled = true
+	
+func _on_hotbar_resized():
+	custom_minimum_size.x = $"..".size.y

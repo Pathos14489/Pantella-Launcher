@@ -6,11 +6,11 @@ var repos = []
 
 @onready var repo_button = preload("res://repository.tscn")
 
-func _ready():
+func _on_root_settings_loaded():
 	if !OS.has_feature("standalone"):
 		repos_dir = ProjectSettings.globalize_path(repos_dir)
 	else:
-		repos_dir = DIR + repos_dir
+		repos_dir = DIR + repos_dir.replace("res://", "")
 	# read json files from repos_dir
 	
 	print(repos_dir)
@@ -33,5 +33,5 @@ func _ready():
 
 func load_repo(repo):
 	var button = repo_button.instantiate()
-	button.apply_repo(repo)
 	add_child(button)
+	button.apply_repo(repo)

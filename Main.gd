@@ -1,4 +1,5 @@
 extends Node
+
 var DIR = OS.get_executable_path().get_base_dir() + "/"
 
 @export var repositories_dir = "res://repositories/"
@@ -6,9 +7,9 @@ var DIR = OS.get_executable_path().get_base_dir() + "/"
 @export var temp_dir = "res://temp/"
 @export var settings_file = "res://launcher_settings.json"
 @onready var plugins_menu = get_tree().root.get_child(0).get_node("UI/ScrollContainer2/VBoxContainer/PluginsMenu")
-@onready var status_bar = $UI/ScrollContainer/VBoxContainer/Panel/StatusBar
-@onready var start_last_button = $UI/ScrollContainer2/VBoxContainer/SettingsPanel/VBoxContainer/StartLastButton
+@onready var status_bar = $UI/StatusBarPanel/Hotbar/StatusBar
 @onready var repos = $UI/ScrollContainer/VBoxContainer/CenterContainer/repos
+@onready var game_settings = $UI/Settings/Panel/Control/ScrollContainer/VBoxContainer/GamesPanel/VBoxContainer/GamesSettings
 
 var settings = {
 	"plugin_path":"",
@@ -32,22 +33,22 @@ func update_setting(key, value):
 
 func save_settings():
 	var file = FileAccess.open(settings_file, FileAccess.WRITE)
-	file.store_string(JSON.stringify(settings))
+	file.store_string(JSON.stringify(settings, "\t"))
 	file.close()
 
 func _ready():
 	if !OS.has_feature("standalone"):
 		repositories_dir = ProjectSettings.globalize_path(repositories_dir)
 	else:
-		repositories_dir = DIR + repositories_dir
+		repositories_dir = DIR + repositories_dir.replace("res://", "")
 	if !OS.has_feature("standalone"):
 		temp_dir = ProjectSettings.globalize_path(temp_dir)
 	else:
-		temp_dir = DIR + temp_dir
+		temp_dir = DIR + temp_dir.replace("res://", "")
 	if !OS.has_feature("standalone"):
 		settings_file = ProjectSettings.globalize_path(settings_file)
 	else:
-		settings_file = DIR + settings_file
+		settings_file = DIR + settings_file.replace("res://", "")
 	# Make sure the directory exists
 	DirAccess.make_dir_absolute(repositories_dir)
 	DirAccess.make_dir_absolute(temp_dir)
@@ -56,8 +57,8 @@ func _ready():
 	repositories_dir_access.list_dir_begin()
 	var file_name = repositories_dir_access.get_next()
 	while file_name != "":
-		if not file_name.ends_with(".ini"):
-			installed_configs += 1
+		if not file_name.ends_with(".ini") and not file_name.ends_with(".gdignore"):
+				installed_configs += 1
 		file_name = repositories_dir_access.get_next()
 	# Count how many repositories are in the directory
 	var repo_configs_diraccess = DirAccess.open(repo_configs_dir)
@@ -109,32 +110,49 @@ func get_plugin_path():
 		p_path += "/"
 	return p_path
 
-func plugin_selected(plugin):
-	print("Plugin selected")
-	if settings["last_loaded_plugin"]["name"] == "" or settings["last_loaded_plugin"]["name"] != plugin["name"]: # If the last plugin was different
-		print("Last plugin was different")
-		var new_plugin_dir = repositories_dir + plugin["repo"].replace("/", "_")
-		if not new_plugin_dir.ends_with("/"):
-			new_plugin_dir += "/"
-		# Move the last plugin from the plugin_path to the last_plugin_dir
+# func plugin_selected(plugin):
+# 	print("Plugin selected")
+# 	if settings["last_loaded_plugin"]["name"] == "" or settings["last_loaded_plugin"]["name"] != plugin["name"]: # If the last plugin was different
+# 		print("Last plugin was different")
+# 		var new_plugin_dir = repositories_dir + plugin["repo"].replace("/", "_")
+# 		if not new_plugin_dir.ends_with("/"):
+# 			new_plugin_dir += "/"
+# 		# Move the last plugin from the plugin_path to the last_plugin_dir
 		
-		if settings["last_loaded_plugin"]["repo"] != "":
-			var last_plugin_dir = repositories_dir + settings["last_loaded_plugin"]["repo"].replace("/", "_")
-			OS.execute("powershell.exe", ["mv", get_plugin_path()+"*", last_plugin_dir])
-		# Move the new plugin from the new_plugin_dir to the plugin_path
-		OS.execute("powershell.exe", ["mv", new_plugin_dir+"*", get_plugin_path()])
-		# Update the last_loaded_plugin setting
-		update_setting("last_loaded_plugin", plugin)
-		
-func _on_button_pressed(): # Background clicked
-	pass
-	# plugins_menu.visible = false
-	# var download_buttons = get_tree().get_nodes_in_group("download_buttons")
-	# for button in download_buttons:
-	# 	button.visible = false
-	
+# 		if settings["last_loaded_plugin"]["repo"] != "":
+# 			var last_plugin_dir = repositories_dir + settings["last_loaded_plugin"]["repo"].replace("/", "_")
+# 			OS.execute("powershell.exe", ["mv", get_plugin_path()+"*", last_plugin_dir])
+# 		# Move the new plugin from the new_plugin_dir to the plugin_path
+# 		OS.execute("powershell.exe", ["mv", new_plugin_dir+"*", get_plugin_path()])
+# 		# Update the last_loaded_plugin setting
+# 		update_setting("last_loaded_plugin", plugin)
+			
 func _on_undeploy_button_pressed(): # unload last plugin
-	status_bar.text = "Unloading "+settings["last_loaded_plugin"]["name"]+"..."
-	var last_plugin_dir = repositories_dir + settings["last_loaded_plugin"]["repo"].replace("/", "_")
-	OS.execute("powershell.exe", ["mv", get_plugin_path()+"*", last_plugin_dir])
-	update_setting("last_loaded_plugin", {"name": "", "repo": ""})
+	#status_bar.text = "Unloading "+settings["last_loaded_plugin"]["name"]+"..."
+	#var last_plugin_dir = repositories_dir + settings["last_loaded_plugin"]["repo"].replace("/", "_")
+	#OS.execute("powershell.exe", ["mv", get_plugin_path()+"*", last_plugin_dir])
+	#update_setting("last_loaded_plugin", {"name": "", "repo": ""})
+	for plugin_node in get_tree().get_nodes_in_group("plugin"):
+		plugin_node.undeploy()
+
+
+func _on_games_settings_games_loaded():
+	pass # Replace with function body.
+
+
+func _a_plugin_installed():
+	$UI/StatusBarPanel/Hotbar/UndeployButton.disabled = false
+
+func _a_plugin_undeployed():
+	var any_plugins_deployed = false
+	for plugin_node in get_tree().get_nodes_in_group("plugin"):
+		if plugin_node.installed:
+			any_plugins_deployed = true
+			break
+	if not any_plugins_deployed:
+		$UI/StatusBarPanel/Hotbar/UndeployButton.disabled = true
+
+
+func _on_update_button_pressed():
+	for repo in get_tree().get_nodes_in_group("repository"):
+		repo.check_for_updates(true)

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c4ag5jty02gg4"
-path="res://.godot/imported/Info Card Tall.png-9585f865e3df702f5a8d2079f3e31488.ctex"
+uid="uid://cldllqgdagd54"
+path="res://.godot/imported/spinner.png-f1256dbeed6ecd00ef2ec29851302c6d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Info Card Tall.png"
-dest_files=["res://.godot/imported/Info Card Tall.png-9585f865e3df702f5a8d2079f3e31488.ctex"]
+source_file="res://assets/spinner.png"
+dest_files=["res://.godot/imported/spinner.png-f1256dbeed6ecd00ef2ec29851302c6d.ctex"]
 
 [params]
 

@@ -1,9 +1,84 @@
-[gd_scene load_steps=2 format=3 uid="uid://bushnesgcipkr"]
+[gd_scene load_steps=5 format=3 uid="uid://bushnesgcipkr"]
 
 [ext_resource type="Script" path="res://plugin_button.gd" id="1_6bq5e"]
+[ext_resource type="StyleBox" uid="uid://8ougcqv66tu6" path="res://skybox.tres" id="1_pfrfa"]
+[ext_resource type="Script" path="res://ModManagerIcon.gd" id="3_kajsx"]
+[ext_resource type="Script" path="res://GameIcon.gd" id="5_tvsoy"]
 
-[node name="PluginButton" type="Button" groups=["plugin"]]
-text = "Plugin"
+[node name="PluginButton" type="Panel" groups=["plugin"]]
+custom_minimum_size = Vector2(800, 95.47)
+anchors_preset = -1
+anchor_left = 0.379
+anchor_top = 0.44
+anchor_right = 0.621
+anchor_bottom = 0.56
+offset_left = 139.392
+offset_top = 28.0
+offset_right = -139.392
+offset_bottom = -28.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = ExtResource("1_pfrfa")
 script = ExtResource("1_6bq5e")
 
-[connection signal="pressed" from="." to="." method="_on_pressed"]
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.02
+anchor_top = 0.249
+anchor_right = 0.98
+anchor_bottom = 0.754
+offset_top = 0.227968
+offset_bottom = 0.0156174
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ModManagerIcon" type="TextureRect" parent="HBoxContainer"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+expand_mode = 1
+stretch_mode = 4
+script = ExtResource("3_kajsx")
+
+[node name="GameIcon" type="TextureRect" parent="HBoxContainer"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+expand_mode = 1
+stretch_mode = 5
+script = ExtResource("5_tvsoy")
+
+[node name="Spacer" type="Label" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+vertical_alignment = 1
+
+[node name="Label" type="Label" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Plugin Title"
+vertical_alignment = 1
+
+[node name="InstallButton" type="Button" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
+disabled = true
+text = "Install"
+
+[node name="UndeployButton" type="Button" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
+disabled = true
+text = "Undeploy"
+
+[connection signal="plugin_active" from="." to="." method="_on_plugin_active"]
+[connection signal="plugin_installed" from="." to="." method="_on_plugin_installed"]
+[connection signal="resized" from="HBoxContainer" to="HBoxContainer/ModManagerIcon" method="_on_resized"]
+[connection signal="resized" from="HBoxContainer" to="HBoxContainer/GameIcon" method="_on_resized"]
+[connection signal="pressed" from="HBoxContainer/InstallButton" to="." method="_on_install_button_pressed"]
+[connection signal="pressed" from="HBoxContainer/UndeployButton" to="." method="undeploy"]

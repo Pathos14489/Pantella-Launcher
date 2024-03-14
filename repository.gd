@@ -1,13 +1,13 @@
-extends Panel
+extends VBoxContainer
 @onready var root = get_tree().root.get_child(0)
 @onready var python = get_tree().root.get_child(0).get_node("PythonInterpreter")
 @onready var http_request = get_tree().root.get_child(0).get_node("HTTPRequest")
-@onready var plugins_menu = get_tree().root.get_child(0).get_node("UI/ScrollContainer2/VBoxContainer/PluginsMenu")
-@onready var status_bar = get_tree().root.get_child(0).get_node("UI/ScrollContainer/VBoxContainer/Panel/StatusBar")
-
-@onready var plugins_button = preload("res://plugin_button.tscn") # TODO: Probably a bad idea to have every repo preload this, but will fix later when not sleep deprived. move to the plugin node prolly
+@onready var status_bar = get_tree().root.get_child(0).get_node("UI/StatusBarPanel/Hotbar/StatusBar")
+@onready var plugins_list = $RepoPanel/VBoxContainer/PluginsList
+@onready var plugins_button = preload("res://plugin_button.tscn")
 
 signal download_extracted
+signal repo_download_finished
 
 var DIR = OS.get_executable_path().get_base_dir() + "/"
 
@@ -21,7 +21,9 @@ var repo = {
 	"entry_point": "N/A",
 	"blacklist": [],
 	"plugins": [],
-	"color": "ffffff"
+	"color": "ffffff",
+	"last_checked_for_updates": Time.get_unix_time_from_system(),
+	"last_updated": Time.get_unix_time_from_system()
 }
 @export var script_path = "run_repo.py"
 @export var watchdog = false
@@ -34,68 +36,199 @@ var active = false
 var current_download = {
 	"repo": "N/A",
 	"name": "N/A",
+	"blacklist": [],
 }
 
 func apply_repo(json):
 	print("Applying repo")
 	repo = json
 	print(repo)
-	get_node("HBoxContainer/Info/Title").text = repo["name"]
-	get_node("HBoxContainer/Info/Title").self_modulate = Color.from_string(repo["color"], Color.WHITE)
-	get_node("HBoxContainer/Info/Repo").text = "Git: " +  repo["repo"]
-	get_node("HBoxContainer/Info/Desc").text = repo["description"]
+	get_node("RepoPanel/VBoxContainer/HBoxContainer/Info/Title").text = repo["name"]
+	get_node("RepoPanel/VBoxContainer/HBoxContainer/Info/Title").self_modulate = Color.from_string(repo["color"], Color.WHITE)
+	get_node("RepoPanel/VBoxContainer/HBoxContainer/Info/Repo").text = repo["repo"]
+	get_node("RepoPanel/VBoxContainer/HBoxContainer/Info/Desc").text = repo["description"]
 	script_path = script_path 
 	watchdog = repo["watchdog"]
 	if !OS.has_feature("standalone"):
 		repositories_dir = ProjectSettings.globalize_path(repositories_dir)
 	else:
-		repositories_dir = DIR + repositories_dir
+		repositories_dir = DIR + repositories_dir.replace("res://", "")
 	repo_dir = repositories_dir+repo["repo"].replace("/", "_")
+	
+	get_node("RepoPanel/VBoxContainer/HBoxContainer/Controls/Download").visible = false
+	get_node("RepoPanel/VBoxContainer/HBoxContainer/Controls/Start").visible = false
+	
 	var dir_access = DirAccess.open(repo_dir)
 	if dir_access:
+		check_for_updates()
 		installed = true
-		get_node("HBoxContainer/Controls/Download").text = "Update"
+		get_node("RepoPanel/VBoxContainer/HBoxContainer/Controls/Start").visible = true
+	else:
+		get_node("RepoPanel/VBoxContainer/HBoxContainer/Controls/Download").visible = true
+
 	# get_node("HBoxContainer/Controls/Start").visible = false
-	get_node("HBoxContainer/Controls/Download").visible = false
+	populate_plugins_list()
 	print("Applied repo")
+
+func check_for_updates(force=false):
+	var current_timestamp = Time.get_unix_time_from_system()
+	# Check every fifteen minutes
+	if not force:
+		if current_timestamp - repo.last_checked_for_updates < 900: # 15 minutes
+			return
+	print("Checking for updates")
+	var repo_api_url = "https://api.github.com/repos/" + repo["repo"] + "/commits"
+	var new_commit_info_path = "res://temp/" + repo["repo"].replace("/", "_") + ".json"
+	var old_commit_info_path = "res://install_info/" + repo["repo"].replace("/", "_") + ".json"
+	$GithubHTTPRequest.download_file = new_commit_info_path
+	# if file already exists, remove it
+	if FileAccess.file_exists(new_commit_info_path):
+		OS.move_to_trash(new_commit_info_path)
+	$GithubHTTPRequest.request(repo_api_url)
+	await $GithubHTTPRequest.request_completed
+	var new_commit_info = JSON.parse_string(FileAccess.open(new_commit_info_path, FileAccess.READ).get_as_text())[0]
+	var old_commit_info = JSON.parse_string(FileAccess.open(old_commit_info_path, FileAccess.READ).get_as_text())[0]
+	get_node("RepoPanel/VBoxContainer/HBoxContainer/Controls/Download").text = "No Updates Available"
+	get_node("RepoPanel/VBoxContainer/HBoxContainer/Controls/Download").visible = false
+	if old_commit_info["sha"] != new_commit_info["sha"]:
+		print("New commit found")
+		get_node("RepoPanel/VBoxContainer/HBoxContainer/Controls/Download").text = "Update"
+		get_node("RepoPanel/VBoxContainer/HBoxContainer/Controls/Download").visible = true
+	repo["last_checked_for_updates"] = current_timestamp
+	save_repo()
+
+	# Check for plugin updates
+	for plugin_node in get_tree().get_nodes_in_group("plugin"):
+		var plugin = plugin_node.plugin
+		var plugin_api_url = "https://api.github.com/repos/" + plugin["repo"] + "/commits"
+		var new_plugin_commit_info_path = "res://temp/" + plugin["repo"].replace("/", "_") + ".json"
+		var old_plugin_commit_info_path = "res://install_info/" + plugin["repo"].replace("/", "_") + ".json"
+		$GithubHTTPRequest.download_file = new_plugin_commit_info_path
+		$GithubHTTPRequest.request(plugin_api_url)
+		await $GithubHTTPRequest.request_completed
+		var new_plugin_commit_info = JSON.parse_string(FileAccess.open(new_plugin_commit_info_path, FileAccess.READ).get_as_text())[0]
+		var old_plugin_commit_info = JSON.parse_string(FileAccess.open(old_plugin_commit_info_path, FileAccess.READ).get_as_text())[0]
+		if old_plugin_commit_info["sha"] != new_plugin_commit_info["sha"]:
+			print("New plugin commit found")
+			get_node("RepoPanel/VBoxContainer/HBoxContainer/Controls/Download").text = "Update"
+			get_node("RepoPanel/VBoxContainer/HBoxContainer/Controls/Download").visible = true
+		# move the temp commit info to trash, it is no longer needed - I think
+		OS.move_to_trash(new_plugin_commit_info_path)
+
+	
+	print("Checked for updates")
+
+func populate_plugins_list():
+	if installed:
+		for plugin in repo["plugins"]:
+			for game in plugin["games"]:
+				print("Adding plugin for " + game + " | " + plugin["repo"] + " | to " + repo["name"])
+				var button = plugins_button.instantiate()
+				button.plugin = plugin
+				button.game = game
+				button.repo = self
+				plugins_list.add_child(button)
 
 func download_repo():
 	print("Downloading repo")
-	# Get all nodes in group download_buttons and disable them
+	# Get all nodes in group download_buttons and disable them - this is to prevent multiple downloads at the same time
 	var buttons = get_tree().get_nodes_in_group("download_buttons")
 	for button in buttons:
 		button.disabled = true
-	get_node("HBoxContainer/Controls/Download").text = "Downloading..."
-	var repositories = get_tree().get_nodes_in_group("repository")
-	for repository in repositories:
-		repository.get_node("Button").disabled = true
+	get_node("RepoPanel/VBoxContainer/HBoxContainer/Controls/Download").text = "Downloading..."
 	status_bar.text = "Downloading " + repo["name"] + " Backend..."
-	var repo_url = "https://github.com/" + repo["repo"] + "/archive/refs/heads/main.zip"
-	var repo_path = "res://temp/" + repo["repo"].replace("/", "_") + ".zip"
-	http_request.download_file = repo_path
-	http_request.request(repo_url)
-	http_request.request_completed.connect(download_completed)
-	current_download = {
-		"repo": repo["repo"],
-		"name": repo["name"],
-	}
-	await download_extracted # Wait for repo download to complete
+	
+	var update_repo = false
+	var repo_already_installed = false
+	# Download the commit info
+	var repo_api_url = "https://api.github.com/repos/" + repo["repo"] + "/commits"
+	var commit_info_path = "res://install_info/" + repo["repo"].replace("/", "_") + ".json"
+	var temp_commit_info_path = "res://temp/" + repo["repo"].replace("/", "_") + ".json"
+	if FileAccess.file_exists(commit_info_path):
+		$GithubHTTPRequest.download_file = temp_commit_info_path
+		repo_already_installed = true
+	else:
+		$GithubHTTPRequest.download_file = commit_info_path
+		update_repo = true
+	$GithubHTTPRequest.request(repo_api_url)
+	await $GithubHTTPRequest.request_completed
+	
+	if repo_already_installed:
+		# Load the commit info from the file
+		var new_commit_info = JSON.parse_string(FileAccess.open(temp_commit_info_path, FileAccess.READ).get_as_text())[0]
+		var old_commit_info = JSON.parse_string(FileAccess.open(commit_info_path, FileAccess.READ).get_as_text())[0]
+		if old_commit_info["sha"] != new_commit_info["sha"]:
+			update_repo = true
+		else:
+			status_bar.text = "Backend already up to date"
+		
+	if update_repo:
+		# Download the repo
+		var repo_url = "https://github.com/" + repo["repo"] + "/archive/refs/heads/main.zip"
+		var repo_path = "res://temp/" + repo["repo"].replace("/", "_") + ".zip"
+		http_request.download_file = repo_path
+		http_request.request(repo_url)
+		http_request.request_completed.connect(download_completed)
+		current_download = {
+			"repo": repo["repo"],
+			"name": repo["name"],
+		}
+		await download_extracted # Wait for repo download to complete
+		# Replace the old commit info with the new commit info
+		OS.move_to_trash(commit_info_path)
+		OS.execute("mv", [temp_commit_info_path, commit_info_path])
+	else:
+		OS.move_to_trash(temp_commit_info_path)
+	
+	# Download related plugins
 	status_bar.text = "Downloading " + repo["name"] + " Plugins..."
 	for plugin in repo["plugins"]:
-		var plugin_url = "https://github.com/" + plugin["repo"] + "/archive/refs/heads/main.zip"
-		var plugin_path = "res://temp/" + plugin["repo"].replace("/", "_") + ".zip"
-		http_request.download_file = plugin_path
-		http_request.request(plugin_url)
-		current_download = plugin
-		status_bar.text = "Downloading " + current_download["repo"] + "..."
-		await download_extracted # Wait for plugin download to complete
+
+		var plugin_download = false
+		
+		var plugin_repo_api_url = "https://api.github.com/repos/" + plugin["repo"] + "/commits"
+		var plugin_commit_info_path = "res://install_info/" + plugin["repo"].replace("/", "_") + ".json"
+		var temp_plugin_commit_info_path = "res://temp/" + plugin["repo"].replace("/", "_") + ".json"
+		# Download the plugin commit info
+		if FileAccess.file_exists(plugin_commit_info_path): # If the plugin is already installed, download the new commit info to a temp file and check if an update is required
+			$GithubHTTPRequest.download_file = temp_plugin_commit_info_path
+			# Load the commit info from the file
+			var new_plugin_commit_info = JSON.parse_string(FileAccess.open(temp_plugin_commit_info_path, FileAccess.READ).get_as_text())[0]
+			var old_plugin_commit_info = JSON.parse_string(FileAccess.open(plugin_commit_info_path, FileAccess.READ).get_as_text())[0]
+			if old_plugin_commit_info["sha"] != new_plugin_commit_info["sha"]: # If the plugin is not up to date flag it for download
+				# Replace the old commit info with the new commit info
+				OS.move_to_trash(plugin_commit_info_path)
+				OS.execute("mv", [temp_plugin_commit_info_path, plugin_commit_info_path])
+				plugin_download = true
+			else: # Remove the temp commit info if the plugin is already up to date
+				OS.move_to_trash(temp_plugin_commit_info_path)
+		else: # If the plugin is not installed, download the commit info to the install_info directory
+			$GithubHTTPRequest.download_file = plugin_commit_info_path
+			plugin_download = true
+		$GithubHTTPRequest.request(plugin_repo_api_url)
+		await $GithubHTTPRequest.request_completed
+			
+		if plugin_download: # If the plugin is flagged for download, download it
+			var plugin_url = "https://github.com/" + plugin["repo"] + "/archive/refs/heads/main.zip"
+			var plugin_path = "res://temp/" + plugin["repo"].replace("/", "_") + ".zip"
+			http_request.download_file = plugin_path
+			http_request.request(plugin_url)
+			current_download = plugin
+			status_bar.text = "Downloading " + current_download["repo"] + "..."
+			await download_extracted # Wait for plugin download to complete
+			
+			for plugin_node in get_tree().get_nodes_in_group("plugin"):  # undeploy the old plugins that were installed
+				if plugin_node.plugin["repo"] == plugin["repo"]:
+					if plugin_node.installed:
+						plugin_node.undeploy()
+						plugin_node._on_install_button_pressed()
 	for button in buttons:
 		button.disabled = false
-	get_node("HBoxContainer/Controls/Download").text = "Update"
-	# get_node("HBoxContainer/Controls/Start").visible = true
+	get_node("RepoPanel/VBoxContainer/HBoxContainer/Controls/Download").text = "No Updates Available"
+	get_node("RepoPanel/VBoxContainer/HBoxContainer/Controls/Download").visible = false
+	# get_node("RepoPanel/VBoxContainer/HBoxContainer/Controls/Start").visible = true
 	installed = true
-	for repository in repositories:
-		repository.get_node("Button").disabled = false
+	repo_download_finished.emit()
 
 func download_completed(_status, _body, _headers, _code):
 	print("Download completed")
@@ -107,7 +240,7 @@ func download_completed(_status, _body, _headers, _code):
 	if !OS.has_feature("standalone"):
 		zip_path = ProjectSettings.globalize_path(zip_path)
 	else:
-		zip_path = DIR + zip_path
+		zip_path = DIR + zip_path.replace("res://", "")
 	var main_dir = temp_path + current_download["repo"].split("/")[1]+"-main/*"
 	var output_dir = repositories_dir + current_download["repo"].replace("/", "_")
 	print(temp_path)
@@ -145,95 +278,78 @@ func _ready():
 	if !OS.has_feature("standalone"):
 		temp_path = ProjectSettings.globalize_path(temp_path)
 	else:
-		temp_path = DIR + temp_path
+		temp_path = DIR + temp_path.replace("res://", "")
 	if !OS.has_feature("standalone"):
 		repo_dir = ProjectSettings.globalize_path(repo_dir)
 	else:
-		repo_dir = DIR + repo_dir
+		repo_dir = DIR + repo_dir.replace("res://", "")
 
 # func start_repo():
-# 	if $HBoxContainer/Controls/Start.text == "Start":
+# 	if $RepoPanel/VBoxContainer/HBoxContainer/Controls/Start.text == "Start":
 # 		_start_repo()
 # 	else:
 # 		_stop_repo()
 
 func _start_repo():
 	print("Starting repo")
-	# $HBoxContainer/Controls/Start.text = "Stop"
+	# $RepoPanel/VBoxContainer/HBoxContainer/Controls/Start.text = "Stop"
 	status_bar.text = "Running " + repo["name"] + "..."
 	print(repo_dir)
 	print(script_path)
 	# var buttons = get_tree().get_nodes_in_group("start_button")
 	# for button in buttons:
-	# 	if button != get_node("HBoxContainer/Controls/Start"):
+	# 	if button != get_node("RepoPanel/VBoxContainer/HBoxContainer/Controls/Start"):
 	# 		button.disabled = true
-	get_node("HBoxContainer/Controls/Download").visible = false
+	get_node("RepoPanel/VBoxContainer/HBoxContainer/Controls/Download").visible = false
 	
 	var wd = watchdog
 	if root.settings["crash_recovery"] != true:
 		wd = false
 	PID = python.run_script(script_path, ["\""+repo['repo']+"\""], root.settings["debug_console"], wd)
 	active = true
-	var repositories = get_tree().get_nodes_in_group("repository")
-	for repository in repositories:
-		repository.get_node("Button").disabled = true
 	print("Started repo")
 
 func _stop_repo():
 	print("Stopping repo")
-	# $HBoxContainer/Controls/Start.text = "Start"
+	# $RepoPanel/VBoxContainer/HBoxContainer/Controls/Start.text = "Start"
 	status_bar.text = "Stopping " + repo["name"] + "..."
 	python.stop_PID(PID)
 	var buttons = get_tree().get_nodes_in_group("start_button")
 	for button in buttons:
 		button.disabled = false
-	get_node("HBoxContainer/Controls/Download").visible = true
-	var repositories = get_tree().get_nodes_in_group("repository")
-	for repository in repositories:
-		repository.get_node("Button").disabled = false
 	active = false
 	status_bar.text = repo["name"] + " has been stopped"
 	print("Stopped repo")
-
-
-func _on_info_resized():
-	custom_minimum_size.y = $HBoxContainer/Info.size.y + 50
 	
-func _on_button_pressed(): # When selected, visible = false for all other repositories download and start buttons
-	var repositories = get_tree().get_nodes_in_group("repository")
-	for repository in repositories:
-		if repository != self:
-			repository.get_node("HBoxContainer/Controls/Download").visible = false
-			# repository.get_node("HBoxContainer/Controls/Start").visible = false
-	self.get_node("HBoxContainer/Controls/Download").visible = true
-	if installed:
-		plugins_menu.visible = true
-		plugins_menu.get_node("VBoxContainer/Panel2/Label3").text = repo["name"]
-		plugins_menu.get_node("VBoxContainer/Panel2/Label3").self_modulate = Color.from_string(repo["color"], Color.WHITE)
-		# if installed:
-			# self.get_node("HBoxContainer/Controls/Start").visible = true
-		# remove all child nodes from plugins_menu.get_node("VBoxContainer/Panel/Plugins")
-		for child in plugins_menu.get_node("VBoxContainer/Panel3/VBoxContainer/Plugins").get_children():
-			child.queue_free()
-		for plugin in repo["plugins"]:
-			var button = plugins_button.instantiate()
-			button.plugin = plugin
-			button.repo = self
-			plugins_menu.get_node("VBoxContainer/Panel3/VBoxContainer/Plugins").add_child(button)
+# func _on_button_pressed(): # When selected, visible = false for all other repositories download and start buttons
+# 	var repositories = get_tree().get_nodes_in_group("repository")
+# 	for repository in repositories:
+# 		if repository != self:
+# 			repository.get_node("RepoPanel/VBoxContainer/HBoxContainer/Controls/Download").visible = false
+# 			# repository.get_node("RepoPanel/VBoxContainer/HBoxContainer/Controls/Start").visible = false
+# 	self.get_node("RepoPanel/VBoxContainer/HBoxContainer/Controls/Download").visible = true
 		
 		
-func plugin_selected(plugin): # from plugin button
-	print("Plugin selected")
-	if "plugin_path" not in root.settings or root.settings["plugin_path"] == "":
-		status_bar.text = "Please set the plugin path in the settings"
-	else:
-		if active == true: # If the repo is running, stop it
-			_stop_repo()
-		else: # If the repo is not running, start it
-			root.plugin_selected(plugin)
-			_start_repo()
+# func plugin_selected(plugin): # from plugin button
+# 	print("Plugin selected")
+# 	if "plugin_path" not in root.settings or root.settings["plugin_path"] == "":
+# 		status_bar.text = "Please set the plugin path in the settings"
+# 	else:
+# 		if active == true: # If the repo is running, stop it
+# 			_stop_repo()
+# 		else: # If the repo is not running, start it
+# 			root.plugin_selected(plugin)
+# 			_start_repo()
 
 func save_repo():
 	var file = FileAccess.open("res://repo_configs/"+repo["file_name"], FileAccess.WRITE)
-	file.store_string(JSON.stringify(repo))
+	file.store_string(JSON.stringify(repo, "\t"))
 	file.close()
+
+func _on_repo_download_finished():
+	populate_plugins_list()
+	$RepoPanel/VBoxContainer/HBoxContainer/Controls/Start.visible = true
+
+
+func start_repo():
+	pass # Replace with function body.

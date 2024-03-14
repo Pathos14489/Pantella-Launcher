@@ -1,101 +1,112 @@
-[gd_scene load_steps=4 format=3 uid="uid://dno35d53whpnp"]
+[gd_scene load_steps=7 format=3 uid="uid://dno35d53whpnp"]
 
 [ext_resource type="StyleBox" uid="uid://8ougcqv66tu6" path="res://skybox.tres" id="1_8vsu3"]
 [ext_resource type="Script" path="res://repository.gd" id="1_v4ypf"]
+[ext_resource type="Script" path="res://RepoPanel.gd" id="3_5i45t"]
+[ext_resource type="Script" path="res://RepoStart.gd" id="4_rresv"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_8j4w0"]
 font_size = 26
 
-[node name="repository" type="Panel" groups=["repository"]]
-clip_children = 2
-custom_minimum_size = Vector2(700, 100)
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -350.0
-offset_top = -50.0
-offset_right = 350.0
-offset_bottom = 50.0
+[sub_resource type="LabelSettings" id="LabelSettings_7ddi5"]
+font_size = 12
+
+[node name="repository" type="VBoxContainer" groups=["repository"]]
+anchors_preset = -1
+anchor_top = 0.435
+anchor_right = 1.0
+anchor_bottom = 0.57
+offset_top = -3.05176e-05
+offset_bottom = -4.00003
 grow_horizontal = 2
 grow_vertical = 2
-size_flags_horizontal = 6
-size_flags_vertical = 6
-theme_override_styles/panel = ExtResource("1_8vsu3")
 script = ExtResource("1_v4ypf")
 
-[node name="Button" type="Button" parent="."]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 9.0
-offset_top = 8.0
-offset_right = -9.0
-offset_bottom = -9.0
-grow_horizontal = 2
-grow_vertical = 2
-flat = true
+[node name="RepoPanel" type="Panel" parent="."]
+clip_children = 2
+custom_minimum_size = Vector2(700, 100)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 6
+theme_override_styles/panel = ExtResource("1_8vsu3")
+script = ExtResource("3_5i45t")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="."]
+[node name="VBoxContainer" type="VBoxContainer" parent="RepoPanel"]
 layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.05
-anchor_top = 0.103333
-anchor_right = 0.941429
-anchor_bottom = 0.873333
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = 32.0
+offset_top = -44.0
+offset_right = -32.0
+offset_bottom = 44.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-metadata/_edit_use_anchors_ = true
 
-[node name="Info" type="VBoxContainer" parent="HBoxContainer"]
-clip_contents = true
-custom_minimum_size = Vector2(500, 0)
+[node name="HBoxContainer" type="HBoxContainer" parent="RepoPanel/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 4
 mouse_filter = 2
+metadata/_edit_use_anchors_ = true
 
-[node name="Title" type="Label" parent="HBoxContainer/Info"]
+[node name="Info" type="VBoxContainer" parent="RepoPanel/VBoxContainer/HBoxContainer"]
+clip_contents = true
 custom_minimum_size = Vector2(500, 0)
 layout_mode = 2
-size_flags_horizontal = 0
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="Title" type="Label" parent="RepoPanel/VBoxContainer/HBoxContainer/Info"]
+custom_minimum_size = Vector2(500, 0)
+layout_mode = 2
 text = "Title"
 label_settings = SubResource("LabelSettings_8j4w0")
 autowrap_mode = 3
 
-[node name="Repo" type="Label" parent="HBoxContainer/Info"]
+[node name="Repo" type="Label" parent="RepoPanel/VBoxContainer/HBoxContainer/Info"]
 custom_minimum_size = Vector2(500, 0)
 layout_mode = 2
-size_flags_horizontal = 0
 text = "Repo"
+label_settings = SubResource("LabelSettings_7ddi5")
 autowrap_mode = 3
 
-[node name="Desc" type="Label" parent="HBoxContainer/Info"]
+[node name="Desc" type="Label" parent="RepoPanel/VBoxContainer/HBoxContainer/Info"]
 custom_minimum_size = Vector2(500, 0)
 layout_mode = 2
-size_flags_horizontal = 0
 text = "Desc"
 autowrap_mode = 3
 
-[node name="Controls" type="VBoxContainer" parent="HBoxContainer"]
+[node name="Spacer" type="Label" parent="RepoPanel/VBoxContainer/HBoxContainer/Info"]
+visible = false
 layout_mode = 2
-size_flags_horizontal = 3
+
+[node name="Controls" type="VBoxContainer" parent="RepoPanel/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
 size_flags_vertical = 4
 alignment = 1
 
-[node name="Download" type="Button" parent="HBoxContainer/Controls" groups=["download_buttons"]]
+[node name="Download" type="Button" parent="RepoPanel/VBoxContainer/HBoxContainer/Controls" groups=["download_buttons"]]
 visible = false
 layout_mode = 2
+mouse_default_cursor_shape = 2
 text = "Download"
 
-[node name="Start" type="Button" parent="HBoxContainer/Controls" groups=["start_button"]]
+[node name="Start" type="Button" parent="RepoPanel/VBoxContainer/HBoxContainer/Controls" groups=["start_button"]]
 visible = false
 layout_mode = 2
+mouse_default_cursor_shape = 2
 text = "Start"
+script = ExtResource("4_rresv")
 
-[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
-[connection signal="resized" from="HBoxContainer/Info" to="." method="_on_info_resized"]
-[connection signal="pressed" from="HBoxContainer/Controls/Download" to="." method="download_repo"]
-[connection signal="pressed" from="HBoxContainer/Controls/Start" to="." method="start_repo"]
+[node name="PluginsList" type="VBoxContainer" parent="RepoPanel/VBoxContainer"]
+layout_mode = 2
+
+[node name="GithubHTTPRequest" type="HTTPRequest" parent="."]
+
+[connection signal="repo_download_finished" from="." to="." method="_on_repo_download_finished"]
+[connection signal="resized" from="RepoPanel/VBoxContainer" to="RepoPanel" method="_on_info_resized"]
+[connection signal="pressed" from="RepoPanel/VBoxContainer/HBoxContainer/Controls/Download" to="." method="download_repo"]
+[connection signal="pressed" from="RepoPanel/VBoxContainer/HBoxContainer/Controls/Start" to="RepoPanel/VBoxContainer/HBoxContainer/Controls/Start" method="_on_pressed"]
