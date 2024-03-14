@@ -1,21 +1,52 @@
 {
-    "args": [],
-    "blacklist": [
-        "config.ini",
-        "data"
-    ],
-    "description": "The Original Mantella dev repository. Works with basic features, mostly bug free, primarily built towards OpenAI chat completions with prompt styling in mind. Supports other OpenAI emulations as well. Slower release cycle, but more stable.",
-    "entry_point": "main.py",
-    "file_name": "Mantella.json",
-    "install_requirements": false,
-    "name": "Mantella",
-    "plugins": [
-        {
-            "name": "Start",
-            "repo": "art-from-the-machine/Mantella-Spell"
-        }
-    ],
-    "color": "darkgreen",
-    "repo": "art-from-the-machine/Mantella",
-    "watchdog": true
+	"args": [],
+	"blacklist": [
+		"config.ini",
+		"data"
+	],
+	"color": "darkgreen",
+	"config_files": [
+		"config.ini"
+	],
+	"description": "The Original Mantella dev repository. Mostly bug free, primarily built towards OpenAI chat completions. Slower release cycle, but more stable.\n\nSupports: Skyrim SE/AE, Skyrim VR, Fallout 4 and Fallout 4 VR",
+	"entry_point": "main.py",
+	"file_name": "Mantella.json",
+	"install_requirements": false,
+	"last_checked_for_updates": 1710426642.656,
+	"last_updated": 1710332485.993,
+	"name": "Mantella",
+	"plugins": [
+		{
+			"blacklist": [],
+			"games": [
+				"skyrim",
+				"skyrimvr"
+			],
+			"name": "Mantella-Spell",
+			"patches": [
+				"Skyrim_Default_Sounds.zip"
+			],
+			"repo": "art-from-the-machine/Mantella-Spell"
+		},
+		{
+			"blacklist": [],
+			"games": [
+				"fallout4"
+			],
+			"name": "Fallout-4-Mutantella-Mod",
+			"patches": [],
+			"repo": "YetAnotherModder/Fallout-4-Mantella-Mod"
+		},
+		{
+			"blacklist": [],
+			"games": [
+				"fallout4vr"
+			],
+			"name": "Fallout-4-VR-Mutantella-Mod",
+			"patches": [],
+			"repo": "YetAnotherModder/Fallout-4-VR-Mantella-Mod"
+		}
+	],
+	"repo": "art-from-the-machine/Mantella",
+	"watchdog": true
 }
