@@ -7,3 +7,5 @@ python-3.10.11-embed/
 logging.log
 launcher_settings.json
 launcher.log
+old/*
+install_info/*

@@ -1,0 +1,207 @@
+[gd_scene load_steps=11 format=3 uid="uid://b52giofq21xm1"]
+
+[ext_resource type="StyleBox" uid="uid://8ougcqv66tu6" path="res://skybox.tres" id="1_02d6f"]
+[ext_resource type="Texture2D" uid="uid://bvl1vk2cs1kts" path="res://game_icons/skyrimvr.png" id="2_spuye"]
+[ext_resource type="Script" path="res://GameSettingsPanel.gd" id="2_ugaug"]
+[ext_resource type="Script" path="res://GameDirectoryDialog.gd" id="4_3myh7"]
+[ext_resource type="Texture2D" uid="uid://dyc8lfaepludj" path="res://folder.png" id="4_52x2j"]
+[ext_resource type="Texture2D" uid="uid://bocdlhdbojoi8" path="res://delete.png" id="4_ithq0"]
+[ext_resource type="Texture2D" uid="uid://bqcoi3fl2wk4w" path="res://vortex-logomark.png" id="5_ndu0l"]
+[ext_resource type="Texture2D" uid="uid://b5i3pe8873xgv" path="res://mo2.png" id="6_uq3hx"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_qc42d"]
+font_size = 24
+
+[sub_resource type="LabelSettings" id="LabelSettings_w6sta"]
+font_color = Color(1, 0, 0, 1)
+
+[node name="GameSettingsPanel" type="Panel"]
+custom_minimum_size = Vector2(1000, 1000)
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 1000.0
+grow_horizontal = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_styles/panel = ExtResource("1_02d6f")
+script = ExtResource("2_ugaug")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 2
+anchor_left = 0.056
+anchor_top = 0.064
+anchor_right = 0.167
+anchor_bottom = 0.192
+offset_left = -0.512001
+offset_right = -0.384018
+texture = ExtResource("2_spuye")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="Title" type="Label" parent="."]
+layout_mode = 2
+anchor_left = 0.167
+anchor_top = 0.064
+anchor_right = 0.833
+anchor_bottom = 0.192
+offset_left = -0.384018
+offset_right = 0.383911
+text = "Title"
+label_settings = SubResource("LabelSettings_qc42d")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ReadyState" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.833
+anchor_top = 0.064
+anchor_right = 0.944
+anchor_bottom = 0.192
+offset_left = 8.38391
+offset_top = 8.0
+offset_right = -7.48804
+offset_bottom = -8.0
+tooltip_text = "NOT READY TO PLAY"
+theme_override_styles/panel = ExtResource("1_02d6f")
+
+[node name="TextureRect" type="TextureRect" parent="ReadyState"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -32.0
+offset_top = -32.0
+offset_right = 32.0
+offset_bottom = 32.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("4_ithq0")
+expand_mode = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.056
+anchor_top = 0.064
+anchor_right = 0.944
+anchor_bottom = 0.96
+offset_left = -0.512001
+offset_top = 160.0
+offset_right = 0.511963
+offset_bottom = -6.10352e-05
+
+[node name="GamePathLabel" type="Label" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+text = "Game Path"
+label_settings = SubResource("LabelSettings_qc42d")
+vertical_alignment = 1
+
+[node name="GamePathButton" type="Button" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+text = "C:/path/to/game/folder/"
+icon = ExtResource("4_52x2j")
+alignment = 0
+expand_icon = true
+
+[node name="WarningLabel" type="Label" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "WARNING: No Game Path Set!"
+label_settings = SubResource("LabelSettings_w6sta")
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="ModManagerLabel" type="Label" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+text = "Mod Manager Type
+"
+label_settings = SubResource("LabelSettings_qc42d")
+vertical_alignment = 1
+
+[node name="ModManagerOptionButton" type="OptionButton" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+expand_icon = true
+item_count = 2
+fit_to_longest_item = false
+popup/item_0/text = "Vortex"
+popup/item_0/icon = ExtResource("5_ndu0l")
+popup/item_0/id = 0
+popup/item_1/text = "Mod Organizer 2"
+popup/item_1/icon = ExtResource("6_uq3hx")
+popup/item_1/id = 1
+
+[node name="WarningLabel2" type="Label" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "WARNING: No Mod Manager Type Set!"
+label_settings = SubResource("LabelSettings_w6sta")
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="ModOrganizer2PathExplanation" type="HBoxContainer" parent="VBoxContainer"]
+visible = false
+custom_minimum_size = Vector2(0, 75)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer/ModOrganizer2PathExplanation"]
+layout_mode = 2
+size_flags_horizontal = 0
+texture = ExtResource("6_uq3hx")
+
+[node name="Label" type="Label" parent="VBoxContainer/ModOrganizer2PathExplanation"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Open Mod Organizer 2 and click on the Settings Icon. Under the \"Paths\" tab, find the \"Base Directory\" path. This is the path you should select below."
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="VortexPathExplanation" type="HBoxContainer" parent="VBoxContainer"]
+visible = false
+custom_minimum_size = Vector2(0, 75)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer/VortexPathExplanation"]
+layout_mode = 2
+size_flags_horizontal = 0
+texture = ExtResource("5_ndu0l")
+
+[node name="Label" type="Label" parent="VBoxContainer/VortexPathExplanation"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Open Vortex and navigate to the Settings tab on the left side of the window. Under the Mods tab along the top of the window, find the Mod Staging Folder for the game you intend to manage.  This is the path you should select below.
+Example: Skyrim Special Edition -> C:/path/to/Vortex Mods/skyrimse"
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="ModManagerPathLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Mod Manager Path
+"
+label_settings = SubResource("LabelSettings_qc42d")
+vertical_alignment = 1
+
+[node name="GameDirectoryDialog" type="FileDialog" parent="."]
+title = "Open a Directory"
+initial_position = 1
+size = Vector2i(794, 519)
+ok_button_text = "Select Current Folder"
+dialog_close_on_escape = false
+file_mode = 2
+access = 2
+script = ExtResource("4_3myh7")
+
+[connection signal="pressed" from="VBoxContainer/GamePathButton" to="GameDirectoryDialog" method="_on_button_pressed"]
+[connection signal="item_selected" from="VBoxContainer/ModManagerOptionButton" to="." method="_on_mod_manager_option_button_item_selected"]
+[connection signal="dir_selected" from="GameDirectoryDialog" to="." method="_on_plugin_dir_dialog_dir_selected"]
+[connection signal="dir_selected" from="GameDirectoryDialog" to="GameDirectoryDialog" method="_on_dir_selected"]

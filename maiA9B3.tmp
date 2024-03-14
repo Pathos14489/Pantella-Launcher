@@ -1,0 +1,385 @@
+[gd_scene load_steps=24 format=3 uid="uid://dsxwane2oefu"]
+
+[ext_resource type="PackedScene" uid="uid://dh5ipu2051dw5" path="res://python_interpreter.tscn" id="1_sjw5x"]
+[ext_resource type="Script" path="res://main.gd" id="1_y3wta"]
+[ext_resource type="Script" path="res://repos.gd" id="3_0uige"]
+[ext_resource type="Texture2D" uid="uid://c7m523s77v86y" path="res://ML_background.png" id="3_3ji7s"]
+[ext_resource type="Script" path="res://UI.gd" id="4_jqugb"]
+[ext_resource type="StyleBox" uid="uid://8ougcqv66tu6" path="res://skybox.tres" id="4_uhq8h"]
+[ext_resource type="Texture2D" uid="uid://cldllqgdagd54" path="res://spinner.png" id="6_g01my"]
+[ext_resource type="Script" path="res://PluginDirDialog.gd" id="6_sqx30"]
+[ext_resource type="Script" path="res://CrashCheckBox.gd" id="7_4aa5k"]
+[ext_resource type="Texture2D" uid="uid://dnm2jsmqg7qy" path="res://settings_icon.png" id="7_hcc80"]
+[ext_resource type="Script" path="res://Spinner.gd" id="7_un52j"]
+[ext_resource type="Texture2D" uid="uid://womwtvl27gqg" path="res://box.png" id="8_10np7"]
+[ext_resource type="Script" path="res://DebugCheckBox.gd" id="8_jdlnm"]
+[ext_resource type="Script" path="res://SettingsButton.gd" id="9_iagd8"]
+[ext_resource type="Script" path="res://UndeployButton.gd" id="10_l243b"]
+[ext_resource type="FontFile" uid="uid://8su8avp8yis1" path="res://Balgruf-JRye7.ttf" id="14_3k6ub"]
+[ext_resource type="Script" path="res://GamesPanel.gd" id="15_plm84"]
+[ext_resource type="Script" path="res://GameSettingsLabel.gd" id="16_fudtm"]
+[ext_resource type="Script" path="res://GamesSettings.gd" id="16_hyynm"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_oex1w"]
+texture = ExtResource("3_3ji7s")
+
+[sub_resource type="LabelSettings" id="LabelSettings_uvmp0"]
+font = ExtResource("14_3k6ub")
+font_size = 40
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ak7x5"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_7dcc2"]
+font = ExtResource("14_3k6ub")
+font_size = 24
+
+[node name="Root" type="Node"]
+script = ExtResource("1_y3wta")
+
+[node name="PythonInterpreter" parent="." instance=ExtResource("1_sjw5x")]
+watchdogable = true
+
+[node name="UI" type="Panel" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_oex1w")
+script = ExtResource("4_jqugb")
+
+[node name="Button" type="Button" parent="UI"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = -0.007
+anchor_top = -0.01
+anchor_right = 1.007
+anchor_bottom = 1.01
+offset_left = 0.0640001
+offset_right = -0.0640869
+grow_horizontal = 2
+grow_vertical = 2
+flat = true
+
+[node name="StatusBarPanel" type="Panel" parent="UI"]
+z_index = 1
+custom_minimum_size = Vector2(0, 53)
+layout_mode = 2
+anchor_right = 1.0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = 61.0
+size_flags_vertical = 4
+theme_override_styles/panel = ExtResource("4_uhq8h")
+
+[node name="Spinner" type="TextureRect" parent="UI/StatusBarPanel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.028
+anchor_top = 0.302
+anchor_right = 0.049
+anchor_bottom = 0.755
+offset_left = 0.191999
+offset_top = -0.00600052
+offset_right = 0.335999
+offset_bottom = -0.0150032
+pivot_offset = Vector2(11, 11)
+texture = ExtResource("6_g01my")
+expand_mode = 1
+stretch_mode = 4
+script = ExtResource("7_un52j")
+
+[node name="StatusBar" type="Label" parent="UI/StatusBarPanel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.056
+anchor_top = 0.151
+anchor_right = 0.669
+anchor_bottom = 0.906
+offset_left = 0.383999
+offset_top = -0.00300026
+offset_right = 0.0159912
+offset_bottom = -0.0180016
+grow_horizontal = 2
+grow_vertical = 2
+text = "? Forks"
+horizontal_alignment = 1
+vertical_alignment = 1
+text_overrun_behavior = 4
+
+[node name="Hotbar" type="HBoxContainer" parent="UI/StatusBarPanel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.669
+anchor_top = 0.151
+anchor_right = 0.972
+anchor_bottom = 0.83
+offset_left = 0.0159912
+offset_top = -0.00300026
+offset_right = -0.192017
+offset_bottom = 0.00999832
+
+[node name="SettingsButton" type="Button" parent="UI/StatusBarPanel/Hotbar"]
+custom_minimum_size = Vector2(36, 0)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+icon = ExtResource("7_hcc80")
+flat = true
+expand_icon = true
+script = ExtResource("9_iagd8")
+
+[node name="UndeployButton" type="Button" parent="UI/StatusBarPanel/Hotbar"]
+custom_minimum_size = Vector2(31, 31)
+layout_mode = 2
+size_flags_horizontal = 4
+tooltip_text = "Undeploy all deployed plugin."
+mouse_default_cursor_shape = 2
+icon = ExtResource("8_10np7")
+expand_icon = true
+script = ExtResource("10_l243b")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="UI"]
+custom_minimum_size = Vector2(700, 300)
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = 64.0
+offset_right = -8.0
+offset_bottom = -8.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="repos" type="VBoxContainer" parent="UI/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+script = ExtResource("3_0uige")
+
+[node name="Label2" type="Label" parent="UI/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Settings" type="Control" parent="UI"]
+visible = false
+z_index = 2
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="Panel" parent="UI/Settings"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.007
+anchor_top = 0.01
+anchor_right = 0.993
+anchor_bottom = 0.99
+offset_left = -0.0640001
+offset_right = 0.0639648
+offset_bottom = -6.10352e-05
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = ExtResource("4_uhq8h")
+
+[node name="Control" type="Control" parent="UI/Settings/Panel"]
+clip_contents = true
+layout_mode = 1
+anchor_left = 0.021
+anchor_top = 0.02
+anchor_right = 0.979
+anchor_bottom = 0.98
+offset_left = 0.143999
+offset_top = 0.319999
+offset_right = -0.144043
+offset_bottom = -0.320007
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="UI/Settings/Panel/Control"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.023
+anchor_right = 0.977
+anchor_bottom = 1.0
+offset_left = 0.079998
+offset_right = -0.0800781
+grow_horizontal = 2
+grow_vertical = 2
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/Settings/Panel/Control/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Label3" type="Label" parent="UI/Settings/Panel/Control/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+text = "Settings"
+label_settings = SubResource("LabelSettings_uvmp0")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="UI/Settings/Panel/Control/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/Settings/Panel/Control/ScrollContainer/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+
+[node name="Label" type="Label" parent="UI/Settings/Panel/Control/ScrollContainer/VBoxContainer/HBoxContainer2/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label6" type="Label" parent="UI/Settings/Panel/Control/ScrollContainer/VBoxContainer/HBoxContainer2/VBoxContainer"]
+custom_minimum_size = Vector2(242.85, 0)
+layout_mode = 2
+text = "Automatic Crash Recovery"
+
+[node name="CrashCheckBox" type="CheckBox" parent="UI/Settings/Panel/Control/ScrollContainer/VBoxContainer/HBoxContainer2/VBoxContainer/Label6"]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -24.0
+offset_top = -12.0
+offset_bottom = 12.0
+grow_horizontal = 0
+grow_vertical = 2
+size_flags_horizontal = 8
+button_pressed = true
+script = ExtResource("7_4aa5k")
+
+[node name="Label2" type="Label" parent="UI/Settings/Panel/Control/ScrollContainer/VBoxContainer/HBoxContainer2/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label7" type="Label" parent="UI/Settings/Panel/Control/ScrollContainer/VBoxContainer/HBoxContainer2/VBoxContainer"]
+layout_mode = 2
+tooltip_text = "Highly recommended so you know when it's ready, whether it's crashing, etc. But if you're confident in your setup, you can disable the console with this."
+mouse_filter = 1
+text = "Show Debug Console"
+
+[node name="DebugCheckBox" type="CheckBox" parent="UI/Settings/Panel/Control/ScrollContainer/VBoxContainer/HBoxContainer2/VBoxContainer/Label7"]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -24.0
+offset_top = -12.0
+offset_bottom = 12.0
+grow_horizontal = 0
+grow_vertical = 2
+size_flags_horizontal = 8
+button_pressed = true
+script = ExtResource("8_jdlnm")
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="UI/Settings/Panel/Control/ScrollContainer/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="UI/Settings/Panel/Control/ScrollContainer/VBoxContainer/HBoxContainer2/VBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Toggle which games you want to be able to use. All settings must be filled out for a game to be considered valid to use."
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="GameToggles" type="GridContainer" parent="UI/Settings/Panel/Control/ScrollContainer/VBoxContainer/HBoxContainer2/VBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 4
+columns = 5
+
+[node name="Label4" type="Label" parent="UI/Settings/Panel/Control/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="GamesPanel" type="Panel" parent="UI/Settings/Panel/Control/ScrollContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 7.415)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_ak7x5")
+script = ExtResource("15_plm84")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/Settings/Panel/Control/ScrollContainer/VBoxContainer/GamesPanel"]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -19.5
+offset_bottom = 19.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="GameSettingsLabel" type="Label" parent="UI/Settings/Panel/Control/ScrollContainer/VBoxContainer/GamesPanel/VBoxContainer"]
+layout_mode = 2
+text = "Games Settings"
+label_settings = SubResource("LabelSettings_7dcc2")
+horizontal_alignment = 1
+script = ExtResource("16_fudtm")
+
+[node name="GamesSettings" type="GridContainer" parent="UI/Settings/Panel/Control/ScrollContainer/VBoxContainer/GamesPanel/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+columns = 2
+script = ExtResource("16_hyynm")
+
+[node name="Label" type="Label" parent="UI/Settings/Panel/Control/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 10
+tooltip_text = "Click to close the settings tab. Settings are saved to file the moment they're set, not when this is clicked."
+
+[node name="CloseButton" type="Button" parent="UI/Settings/Panel/Control/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 8
+theme_override_fonts/font = ExtResource("14_3k6ub")
+theme_override_font_sizes/font_size = 24
+text = "CLOSE SETTINGS"
+
+[node name="Label2" type="Label" parent="UI/Settings/Panel/Control/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="PluginDirDialog" type="FileDialog" parent="."]
+title = "Open a Directory"
+initial_position = 1
+size = Vector2i(794, 519)
+ok_button_text = "Select Current Folder"
+dialog_close_on_escape = false
+file_mode = 2
+access = 2
+script = ExtResource("6_sqx30")
+
+[node name="HTTPRequest" type="HTTPRequest" parent="."]
+download_chunk_size = 131072
+use_threads = true
+
+[connection signal="settings_loaded" from="." to="UI/StatusBarPanel/Hotbar/UndeployButton" method="_on_root_settings_loaded"]
+[connection signal="pressed" from="UI/Button" to="." method="_on_button_pressed"]
+[connection signal="resized" from="UI/StatusBarPanel/Hotbar" to="UI/StatusBarPanel/Hotbar/UndeployButton" method="_on_hotbar_resized"]
+[connection signal="resized" from="UI/StatusBarPanel/Hotbar" to="UI/StatusBarPanel/Hotbar/SettingsButton" method="_on_hotbar_resized"]
+[connection signal="pressed" from="UI/StatusBarPanel/Hotbar/SettingsButton" to="UI" method="_on_settings_button_pressed"]
+[connection signal="pressed" from="UI/StatusBarPanel/Hotbar/UndeployButton" to="." method="_on_undeploy_button_pressed"]
+[connection signal="pressed" from="UI/StatusBarPanel/Hotbar/UndeployButton" to="UI/StatusBarPanel/Hotbar/UndeployButton" method="_on_pressed"]
+[connection signal="resized" from="UI/Settings" to="UI/Settings/Panel/Control/ScrollContainer/VBoxContainer/GamesPanel" method="_on_settings_resized"]
+[connection signal="toggled" from="UI/Settings/Panel/Control/ScrollContainer/VBoxContainer/HBoxContainer2/VBoxContainer/Label6/CrashCheckBox" to="UI/Settings/Panel/Control/ScrollContainer/VBoxContainer/HBoxContainer2/VBoxContainer/Label6/CrashCheckBox" method="_on_toggled"]
+[connection signal="toggled" from="UI/Settings/Panel/Control/ScrollContainer/VBoxContainer/HBoxContainer2/VBoxContainer/Label7/DebugCheckBox" to="UI/Settings/Panel/Control/ScrollContainer/VBoxContainer/HBoxContainer2/VBoxContainer/Label7/DebugCheckBox" method="_on_toggled"]
+[connection signal="resized" from="UI/Settings/Panel/Control/ScrollContainer/VBoxContainer/GamesPanel/VBoxContainer" to="UI/Settings/Panel/Control/ScrollContainer/VBoxContainer/GamesPanel" method="_on_resized"]
+[connection signal="games_loaded" from="UI/Settings/Panel/Control/ScrollContainer/VBoxContainer/GamesPanel/VBoxContainer/GamesSettings" to="UI/Settings/Panel/Control/ScrollContainer/VBoxContainer/GamesPanel" method="_on_games_settings_games_loaded"]
+[connection signal="pressed" from="UI/Settings/Panel/Control/ScrollContainer/VBoxContainer/CloseButton" to="UI" method="_on_close_button_pressed"]
+[connection signal="pressed" from="UI/Settings/Panel/Control/ScrollContainer/VBoxContainer/CloseButton" to="UI/Settings" method="_on_close_button_pressed"]
+[connection signal="dir_selected" from="PluginDirDialog" to="PluginDirDialog" method="_on_dir_selected"]

@@ -52,7 +52,7 @@ try:
         args = parser.parse_args()
         launcher_logging.info("Attempting to run repository at " + args.repo_path)
         launcher_logging.info(sys.path)
-        repo_path = os.path.join(os.getcwd(), "repositories/" + args.repo_path.replace("/", "_"))
+        repo_path = os.path.join(os.getcwd(), "repositories\\" + args.repo_path.replace("/", "_"))
         repo_json = None
         for file in os.listdir(repo_configs_path):
             if file.endswith(".json"):
