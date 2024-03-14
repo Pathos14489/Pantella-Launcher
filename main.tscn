@@ -64,14 +64,12 @@ theme_override_styles/panel = ExtResource("4_uhq8h")
 [node name="Hotbar" type="HBoxContainer" parent="UI/StatusBarPanel"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.021
-anchor_top = 0.151
-anchor_right = 0.972
-anchor_bottom = 0.83
-offset_left = 0.143999
-offset_top = -0.00300026
-offset_right = -0.192017
-offset_bottom = 0.0100021
+anchor_right = 1.0
+anchor_bottom = 1.057
+offset_left = 24.0
+offset_top = 8.0
+offset_right = -24.0
+offset_bottom = -12.021
 alignment = 2
 
 [node name="Spinner" type="TextureRect" parent="UI/StatusBarPanel/Hotbar"]
