@@ -10,7 +10,7 @@ config_version=5
 
 [application]
 
-config/name="Pantella Launcher - v0.0.5"
+config/name="Pantella Launcher - v0.0.5b"
 config/description="Launcher for easily running Mantella development branch and it's related forks from source in it's proper dev/production ready environment with the correct plugin swapped out as needed."
 run/main_scene="res://main.tscn"
 config/features=PackedStringArray("4.2", "Forward Plus")

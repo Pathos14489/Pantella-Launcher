@@ -79,9 +79,9 @@ func _on_install_button_pressed():
 		mod_manager_dir.make_dir(plugin_path)
 	source_path = "\""+source_path+"/\""
 	print("Copying " + source_path + " to " + plugin_path+plugin["repo"].replace("/", "_"))
-	OS.execute("powershell.exe", ["Copy-Item", "-Recurse", source_path.replace(" ","' '"), "\""+plugin_path.replace(" ","' '")+"\""])
+	OS.execute("powershell.exe", ["Copy-Item", "-Recurse", "\""+source_path.replace(" ","' '")+"\"", "\""+plugin_path.replace(" ","' '")+"\""])
 	# copy commit history
-	OS.execute("powershell.exe", ["Copy-Item", "\""+plugin_commit_history_path+"\"".replace(" ","' '"), "\""+plugin_path+plugin["repo"].replace("/", "_").replace(" ","' '")+"/commit_history.json"+"\""])
+	OS.execute("powershell.exe", ["Copy-Item", "\""+plugin_commit_history_path.replace(" ","' '")+"\"", "\""+str(plugin_path+plugin["repo"].replace("/", "_")).replace(" ","' '")+"/commit_history.json"+"\""])
 	for patch in plugin["patches"]: # Extract patches from res://plugin_patches/{patch} to the plugin folder
 		var patch_path = "res://plugin_patches/" + patch
 		if !OS.has_feature("standalone"):

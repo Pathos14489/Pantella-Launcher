@@ -154,9 +154,15 @@ func download_repo():
 	var commit_info_path = "res://install_info/" + repo["repo"].replace("/", "_") + ".json"
 	var temp_commit_info_path = "res://temp/" + repo["repo"].replace("/", "_") + ".json"
 	if FileAccess.file_exists(commit_info_path):
-		$GithubHTTPRequest.download_file = temp_commit_info_path
-		repo_already_installed = true
-		print("Repo already installed")
+		if DirAccess.dir_exists_absolute("res://repositories/" + repo["repo"].replace("/", "_")):
+			repo_already_installed = true
+			$GithubHTTPRequest.download_file = temp_commit_info_path
+			print("Repo already installed")
+		else:
+			# Clear the old commit info
+			OS.move_to_trash(commit_info_path)
+			$GithubHTTPRequest.download_file = commit_info_path
+			update_repo = true
 	else:
 		$GithubHTTPRequest.download_file = commit_info_path
 		update_repo = true
@@ -202,21 +208,22 @@ func download_repo():
 		var plugin_commit_info_path = "res://install_info/" + plugin["repo"].replace("/", "_") + ".json"
 		var temp_plugin_commit_info_path = "res://temp/" + plugin["repo"].replace("/", "_") + ".json"
 		# Download the plugin commit info
+		$GithubHTTPRequest.download_file = plugin_commit_info_path
+		plugin_download = true
 		if FileAccess.file_exists(plugin_commit_info_path): # If the plugin is already installed, download the new commit info to a temp file and check if an update is required
-			$GithubHTTPRequest.download_file = temp_plugin_commit_info_path
-			# Load the commit info from the file
-			var new_plugin_commit_info = JSON.parse_string(FileAccess.open(temp_plugin_commit_info_path, FileAccess.READ).get_as_text())[0]
-			var old_plugin_commit_info = JSON.parse_string(FileAccess.open(plugin_commit_info_path, FileAccess.READ).get_as_text())[0]
-			if old_plugin_commit_info["sha"] != new_plugin_commit_info["sha"]: # If the plugin is not up to date flag it for download
-				# Replace the old commit info with the new commit info
-				OS.move_to_trash(plugin_commit_info_path)
-				OS.execute("mv", [temp_plugin_commit_info_path, plugin_commit_info_path])
-				plugin_download = true
-			else: # Remove the temp commit info if the plugin is already up to date
-				OS.move_to_trash(temp_plugin_commit_info_path)
-		else: # If the plugin is not installed, download the commit info to the install_info directory
-			$GithubHTTPRequest.download_file = plugin_commit_info_path
-			plugin_download = true
+			if DirAccess.dir_exists_absolute("res://repositories/" + plugin["repo"].replace("/", "_")):
+				$GithubHTTPRequest.download_file = temp_plugin_commit_info_path
+				# Load the commit info from the file
+				var new_plugin_commit_info = JSON.parse_string(FileAccess.open(temp_plugin_commit_info_path, FileAccess.READ).get_as_text())[0]
+				var old_plugin_commit_info = JSON.parse_string(FileAccess.open(plugin_commit_info_path, FileAccess.READ).get_as_text())[0]
+				if old_plugin_commit_info["sha"] != new_plugin_commit_info["sha"]: # If the plugin is not up to date flag it for download
+					# Replace the old commit info with the new commit info
+					OS.move_to_trash(plugin_commit_info_path)
+					OS.execute("mv", [temp_plugin_commit_info_path, plugin_commit_info_path])
+				else: # Remove the temp commit info if the plugin is already up to date
+					OS.move_to_trash(temp_plugin_commit_info_path)
+					plugin_download = false
+
 		await $GithubHTTPRequest/OffsetTimer.timeout
 		$GithubHTTPRequest.request(plugin_repo_api_url)
 		await $GithubHTTPRequest.request_completed
@@ -280,7 +287,7 @@ func download_completed(_status, _body, _headers, _code):
 		DirAccess.make_dir_absolute(output_dir)
 
 	OS.execute("tar", ["-xf", zip_path, "-C", temp_path]) # Extract the downloaded zip to the temp directory
-	OS.execute("powershell.exe", ["mv", main_dir, output_dir]) # Move the contents of the temp directory to the repo directory
+	OS.execute("powershell.exe", ["mv", "\""+main_dir.replace(" ","' '")+"\"", "\""+output_dir.replace(" ","' '")+"\""]) # Move the contents of the temp directory to the repo directory
 	# Remove the temp directory
 	OS.move_to_trash(main_dir.replace("/*", ""))
 	OS.move_to_trash(zip_path)
