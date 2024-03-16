@@ -21,6 +21,10 @@ func _ready():
 		game_configs_dir = ProjectSettings.globalize_path(game_configs_dir)
 	else:
 		game_configs_dir = DIR + game_configs_dir.replace("res://", "")
+	if !OS.has_feature("standalone"):
+		game_icons_dir = ProjectSettings.globalize_path(game_icons_dir)
+	else:
+		game_icons_dir = DIR + game_icons_dir.replace("res://", "")
 	print(game_configs_dir)
 	# For each file in the game_icons_dir load the texture
 	var game_icons_dir_access = DirAccess.open(game_icons_dir)
