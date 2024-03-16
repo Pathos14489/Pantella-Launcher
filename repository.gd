@@ -363,7 +363,12 @@ func _stop_repo():
 # 			_start_repo()
 
 func save_repo():
-	var file = FileAccess.open("res://repo_configs/"+repo["file_name"], FileAccess.WRITE)
+	var file_path = "res://repo_configs/"+repo["file_name"]
+	if !OS.has_feature("standalone"):
+		file_path = ProjectSettings.globalize_path(file_path)
+	else:
+		file_path = DIR + file_path.replace("res://", "")
+	var file = FileAccess.open(file_path, FileAccess.WRITE)
 	file.store_string(JSON.stringify(repo, "\t"))
 	file.close()
 

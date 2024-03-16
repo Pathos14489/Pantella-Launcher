@@ -72,7 +72,15 @@ func _ready():
 		game_toggles.add_child(game_toggle)
 		
 	# Load the mod manager icons
-	mod_manager_icon_textures["mo2"] = ImageTexture.create_from_image(Image.load_from_file("res://assets/mo2.png"))
-	mod_manager_icon_textures["vortex"] = ImageTexture.create_from_image(Image.load_from_file("res://assets/vortex-logomark.png"))
+	var mo2_path = "res://assets/mo2.png"
+	var vortex_path = "res://assets/vortex-logomark.png"
+	if OS.has_feature("standalone"):
+		mo2_path = DIR + mo2_path.replace("res://", "")
+		vortex_path = DIR + vortex_path.replace("res://", "")
+	else:
+		mo2_path = ProjectSettings.globalize_path(mo2_path)
+		vortex_path = ProjectSettings.globalize_path(vortex_path)
+	mod_manager_icon_textures["mo2"] = ImageTexture.create_from_image(Image.load_from_file(mo2_path))
+	mod_manager_icon_textures["vortex"] = ImageTexture.create_from_image(Image.load_from_file(vortex_path))
 	
 	games_loaded.emit()
