@@ -8,7 +8,7 @@
 	"config_files": [
 		"config.json"
 	],
-	"description": "Massive overhaul of the Mantella mod. Accented xTTS Support, Customizable Multi-Language Support, Custom Prompt Formats/Styles, Advanced Behavior System and NPC Scripting API, Proper Local LLM integration, player name, race and sex awareness, Vision Support via LLaVA, and more! Can be buggier than Mantella, but is more feature rich and has a faster development cycle.\n\nOpenAI API is still supported, but primary focus is on other enabling native support for various other inference engines like llama-cpp-python, transformers, etc.\n\nSupports: Skyrim SE/AE and Skyrim VR",
+	"description": "Massive overhaul of the Mantella mod. Accented xTTS Support, Customizable Multi-Language Support, Use multiple TTS at once, Custom Prompt Formats/Styles, Advanced Behavior System and NPC Scripting API, Proper Local LLM integration, player name, race and sex awareness, Vision Support via LLaVA, and more! Can be buggier than Mantella, but is more feature rich and has a faster development cycle.\n\nOpenAI API is still supported, but primary focus is on other enabling native support for various other inference engines like llama-cpp-python, transformers, etc.\n\nSupports: Skyrim SE/AE and Skyrim VR",
 	"entry_point": "main.py",
 	"file_name": "Pantella.json",
 	"install_requirements": false,
