@@ -1,4 +1,4 @@
-# Mantella Launcher
+# Pantella Launcher
 
 Launcher for easily running Mantella development branches from source in it's proper dev/production ready environment.
 
