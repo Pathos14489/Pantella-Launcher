@@ -49,19 +49,23 @@ try:
     if __name__ == "__main__":
         parser = argparse.ArgumentParser(description='Run a repository')
         parser.add_argument('repo_path', type=str, help='The path to the repository directory')
+        parser.add_argument('--dir_suffix', type=str, default="", help='The suffix to add to the directory name')
         args = parser.parse_args()
         launcher_logging.info("Attempting to run repository at " + args.repo_path)
         launcher_logging.info(sys.path)
-        repo_path = os.path.join(os.getcwd(), "repositories\\" + args.repo_path.replace("/", "_"))
         repo_json = None
         for file in os.listdir(repo_configs_path):
             if file.endswith(".json"):
                 json_obj = json.load(open(os.path.join(repo_configs_path, file)))
-                if json_obj["repo"] == args.repo_path:
+                if "dir_suffix" not in json_obj:
+                    json_obj["dir_suffix"] = ""
+                # print(json_obj["repo"], args.repo_path, json_obj["dir_suffix"], args.dir_suffix)
+                if json_obj["repo"] == args.repo_path and json_obj["dir_suffix"] == args.dir_suffix:
                     repo_json = json_obj
                     break
         if repo_json is None:
             raise Exception("No config file found for this repository")
+        repo_path = os.path.join(os.getcwd(), "repositories\\" + args.repo_path.replace("/", "_") + repo_json["dir_suffix"])
         sys.path.append(repo_path)
         launcher_logging.info(sys.path)
         # Change working directory to the repository
