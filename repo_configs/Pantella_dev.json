@@ -10,25 +10,24 @@
 	],
 	"color": "pink",
 	"branch": "main",
-	"commit": "cd3e729d329e3db08676993c8297d59d595223b1",
-	"dir_suffix": "",
+	"commit": "",
+	"dir_suffix": "_dev",
 	"config_files": [
 		"config.json"
 	],
 	"description": "Massive overhaul of the Mantella mod. Accented xTTS Support, Customizable Multi-Language Support, Use multiple TTS at once, Custom Prompt Formats/Styles, Advanced Behavior System and NPC Scripting API, Proper Local LLM integration, player name, race and sex awareness, Vision Support via LLaVA, and more! Can be buggier than Mantella, but is more feature rich and has a faster development cycle.\n\nOpenAI API is still supported, but primary focus is on other enabling native support for various other inference engines like llama-cpp-python, transformers, etc.\n\nSupports: Skyrim SE/AE and Skyrim VR",
 	"entry_point": "main.py",
-	"python_binary": "./python-3.10.11-embed/python.exe",
-	"file_name": "Pantella.json",
+	"file_name": "Pantella_dev.json",
 	"install_requirements": false,
 	"last_checked_for_updates": 0,
 	"last_updated": 0,
-	"name": "Pantella (stable)",
+	"name": "Pantella (dev)",
 	"plugins": [
 		{
 			"blacklist": [],
 			"branch": "main",
 			"commit": "",
-			"dir_suffix": "",
+			"dir_suffix": "_dev",
 			"games": [
 				"skyrim",
 				"skyrimvr"
@@ -38,6 +37,7 @@
 			"repo": "Pathos14489/Pantella-Spell"
 		}
 	],
+	"python_binary": "./python-3.10.11-embed/python.exe",
 	"repo": "Pathos14489/Pantella",
 	"watchdog": true
 }

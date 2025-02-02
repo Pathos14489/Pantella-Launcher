@@ -11,6 +11,7 @@ var plugin = {
 	"name":"",
 	"patches": [],
 	"repo":"",
+	"branch": "main",
 	"blacklist": []
 }
 
@@ -43,7 +44,7 @@ func _ready():
 			if game_settings_node.game.mod_organizer_type != "":
 				$HBoxContainer/ModManagerIcon.texture = root.game_settings.mod_manager_icon_textures[game_settings_node.game.mod_organizer_type]
 			mod_organizer_path = game_settings_node.game["mod_organizer_path"]
-			if gsn.game["mod_organizer_type"] == "mo2":
+			if gsn.game["mod_organizer_type"] == "mo2" and !mod_organizer_path.ends_with("/mods"):
 				plugin_path = mod_organizer_path + "/mods/"
 			else:
 				plugin_path = mod_organizer_path + "/"
@@ -71,6 +72,27 @@ func _on_plugin_active():
 		if mod_organizer_dir.dir_exists(plugin_path + "/" + plugin["repo"].replace("/", "_") + "/"):
 			plugin_installed.emit()
 
+# func _on_install_button_pressed():
+# 	$HBoxContainer/InstallButton.disabled = true
+# 	$HBoxContainer/InstallButton.text = "Installing..."
+# 	var mod_manager_dir = DirAccess.open(mod_organizer_path)
+# 	if !mod_manager_dir.dir_exists(plugin_path):
+# 		mod_manager_dir.make_dir(plugin_path)
+# 	source_path = "\""+source_path.replace(" ","' '")+"\""
+# 	print("Copying " + source_path + " to " + "\""+plugin_path.replace(" ","' '")+"\"")
+# 	OS.execute("powershell.exe", ["Copy-Item", "-Recurse", source_path, "\""+plugin_path.replace(" ","' '")+"\""])
+# 	# copy commit history
+# 	OS.execute("powershell.exe", ["Copy-Item", "\""+plugin_commit_history_path.replace(" ","' '")+"\"", "\""+str(plugin_path+plugin["repo"].replace("/", "_")).replace(" ","' '")+"/commit_history.json"+"\""])
+# 	for patch in plugin["patches"]: # Extract patches from res://plugin_patches/{patch} to the plugin folder
+# 		var patch_path = "res://plugin_patches/" + patch
+# 		if !OS.has_feature("standalone"):
+# 			patch_path = ProjectSettings.globalize_path(patch_path)
+# 		else:
+# 			patch_path = DIR + patch_path.replace("res://", "")
+# 		print("Patching " + patch_path + " to " + plugin_path+"/"+plugin["repo"].replace("/", "_"))
+# 		OS.execute("tar", ["-xf", "\""+patch_path+"\"", "-C", "\""+plugin_path+"/"+plugin["repo"].replace("/", "_")+"\""])
+# 	plugin_installed.emit()
+
 func _on_install_button_pressed():
 	$HBoxContainer/InstallButton.disabled = true
 	$HBoxContainer/InstallButton.text = "Installing..."
@@ -78,10 +100,31 @@ func _on_install_button_pressed():
 	if !mod_manager_dir.dir_exists(plugin_path):
 		mod_manager_dir.make_dir(plugin_path)
 	source_path = "\""+source_path+"/\""
-	print("Copying " + source_path + " to " + plugin_path+plugin["repo"].replace("/", "_"))
-	OS.execute("powershell.exe", ["Copy-Item", "-Recurse", "\""+source_path.replace(" ","' '")+"\"", "\""+plugin_path.replace(" ","' '")+"\""])
+	
+	var command = [
+		"Copy-Item",
+		"-Recurse",
+		"\"" + source_path + "\"",
+		"\"\"" + plugin_path + "\"\""
+	]
+	
+	print("Executing command in powershell: " + " ".join(command))
+	var output = []
+	OS.execute("powershell.exe", command, output, true)
+	print("Output: " + " ".join(output))
+	
+	command = [
+		"Copy-Item",
+		"\"\"" + plugin_commit_history_path + "\"\"",
+		"\"\"" + str(plugin_path+plugin["repo"].replace("/", "_")) + "/commit_history.json" + "\"\""
+	]
+	
 	# copy commit history
-	OS.execute("powershell.exe", ["Copy-Item", "\""+plugin_commit_history_path.replace(" ","' '")+"\"", "\""+str(plugin_path+plugin["repo"].replace("/", "_")).replace(" ","' '")+"/commit_history.json"+"\""])
+	print("Executing command in powershell: " + " ".join(command))
+	output = []
+	OS.execute("powershell.exe", command, output, true)
+	print("Output: " + " ".join(output))
+	
 	for patch in plugin["patches"]: # Extract patches from res://plugin_patches/{patch} to the plugin folder
 		var patch_path = "res://plugin_patches/" + patch
 		if !OS.has_feature("standalone"):

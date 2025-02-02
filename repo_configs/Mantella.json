@@ -2,9 +2,13 @@
 	"args": [],
 	"blacklist": [
 		"config.ini",
-		"data"
+		"data",
+		"GPT_SECRET_KEY.txt"
 	],
 	"color": "darkgreen",
+	"branch": "main",
+	"commit": "",
+	"dir_suffix": "",
 	"config_files": [
 		"config.ini"
 	],
@@ -18,6 +22,9 @@
 	"plugins": [
 		{
 			"blacklist": [],
+			"branch": "main",
+			"commit": "",
+			"dir_suffix": "",
 			"games": [
 				"skyrim",
 				"skyrimvr"
@@ -30,6 +37,9 @@
 		},
 		{
 			"blacklist": [],
+			"branch": "main",
+			"commit": "",
+			"dir_suffix": "",
 			"games": [
 				"fallout4"
 			],
@@ -39,6 +49,9 @@
 		},
 		{
 			"blacklist": [],
+			"branch": "main",
+			"commit": "",
+			"dir_suffix": "",
 			"games": [
 				"fallout4vr"
 			],
@@ -47,6 +60,7 @@
 			"repo": "YetAnotherModder/Fallout-4-VR-Mantella-Mod"
 		}
 	],
+	"python_binary": "./python-3.11.6-embed/python.exe",
 	"repo": "art-from-the-machine/Mantella",
 	"watchdog": true
 }

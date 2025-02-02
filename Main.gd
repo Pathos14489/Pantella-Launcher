@@ -13,6 +13,7 @@ var DIR = OS.get_executable_path().get_base_dir() + "/"
 
 var settings = {
 	"plugin_path":"",
+	"first_time_launch":true,
 	"crash_recovery":true,
 	"debug_console": true,
 	"last_loaded_plugin": {
@@ -88,20 +89,26 @@ func _ready():
 	settings_loaded.emit()
 
 func fix_settings():
+	var save = false
+	if "first_time_launch" not in settings:
+		settings["first_time_launch"] = true
+		save = true
 	if "last_loaded_plugin" not in settings:
 		settings["last_loaded_plugin"] = {
 			"name": "",
 			"repo": ""
 		}
-		save_settings()
+		save = true
 	if "plugin_path" not in settings:
 		settings["plugin_path"] = ""
-		save_settings()
+		save = true
 	if "crash_recovery" not in settings:
 		settings["crash_recovery"] = true
-		save_settings()
+		save = true
 	if "debug_console" not in settings:
 		settings["debug_console"] = true
+		save = true
+	if save:
 		save_settings()
 
 func get_plugin_path():

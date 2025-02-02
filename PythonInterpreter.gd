@@ -27,16 +27,26 @@ func _ready():
 	print("Python interpreter path: " + interpreter_path)
 	interpreter_ready.emit()
 
-func run_script(script_path, script_args=[], console=true, watchdog=false):
+func run_script(python_binary, script_path, script_args=[], console=true, watchdog=false):
+	if python_binary != "":
+		if python_binary.begins_with("./") or python_binary.begins_with(".\\"):
+			python_binary = python_binary.replace("./", "")
+			python_binary = python_binary.replace(".\\", "")
+		if !OS.has_feature("standalone"):
+			python_binary = ProjectSettings.globalize_path("res://" + python_binary)
+		else:
+			python_binary = DIR + python_binary
+	else:
+		python_binary = interpreter_path
 	print("Running Python script: " + script_path)
 	if !OS.has_feature("standalone"):
 		script_path = ProjectSettings.globalize_path("res://" + script_path)
 	else:
 		script_path = DIR + script_path
 	var args = [script_path] + script_args
-	var PID = OS.create_process(interpreter_path, args, console)
+	var PID = OS.create_process(python_binary, args, console)
 	if watchdog:
-		watched_pids[PID] = [interpreter_path, args, console, watchdog]
+		watched_pids[PID] = [python_binary, args, console, watchdog]
 		print("Watchdog enabled for process: " + str(PID))
 	print("Process ID: " + str(PID))
 	process_ids.append(PID)

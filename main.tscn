@@ -149,7 +149,6 @@ script = ExtResource("3_0uige")
 layout_mode = 2
 
 [node name="Settings" type="Control" parent="UI"]
-visible = false
 z_index = 2
 layout_mode = 1
 anchors_preset = 15
@@ -333,6 +332,17 @@ text = "CLOSE SETTINGS"
 [node name="Label2" type="Label" parent="UI/Settings/Panel/Control/ScrollContainer/VBoxContainer"]
 layout_mode = 2
 
+[node name="Label" type="Label" parent="UI/Settings/Panel/Control"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -31.9999
+offset_right = 88.0
+offset_bottom = -7.99994
+grow_vertical = 0
+text = "v0.0.6 alpha"
+
 [node name="PluginDirDialog" type="FileDialog" parent="."]
 title = "Open a Directory"
 initial_position = 1
@@ -346,6 +356,9 @@ script = ExtResource("6_sqx30")
 [node name="HTTPRequest" type="HTTPRequest" parent="."]
 download_chunk_size = 131072
 use_threads = true
+
+[node name="ProgressTimer" type="Timer" parent="."]
+wait_time = 0.5
 
 [connection signal="settings_loaded" from="." to="UI/StatusBarPanel/Hotbar/UndeployButton" method="_on_root_settings_loaded"]
 [connection signal="settings_loaded" from="." to="UI/ScrollContainer/VBoxContainer/repos" method="_on_root_settings_loaded"]
@@ -364,3 +377,4 @@ use_threads = true
 [connection signal="pressed" from="UI/Settings/Panel/Control/ScrollContainer/VBoxContainer/CloseButton" to="UI" method="_on_close_button_pressed"]
 [connection signal="pressed" from="UI/Settings/Panel/Control/ScrollContainer/VBoxContainer/CloseButton" to="UI/Settings" method="_on_close_button_pressed"]
 [connection signal="dir_selected" from="PluginDirDialog" to="PluginDirDialog" method="_on_dir_selected"]
+[connection signal="timeout" from="ProgressTimer" to="UI" method="_on_progress_timer_timeout"]
