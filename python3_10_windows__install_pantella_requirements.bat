@@ -1,0 +1,1 @@
+.\python-3.10.11-embed\python.exe -m pip install -r .\repositories\Pathos14489_Pantella\launcher_requirements.txt

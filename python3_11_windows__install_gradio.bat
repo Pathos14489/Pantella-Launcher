@@ -1,0 +1,1 @@
+.\python-3.10.11-embed\python.exe -m pip install gradio

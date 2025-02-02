@@ -1,0 +1,1 @@
+.\python-3.10.11-embed\python.exe .\run_repo.py "Pathos14489/Pantella"
