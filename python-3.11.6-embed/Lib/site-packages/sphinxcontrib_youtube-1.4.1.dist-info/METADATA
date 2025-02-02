@@ -1,0 +1,35 @@
+Metadata-Version: 2.1
+Name: sphinxcontrib-youtube
+Version: 1.4.1
+Summary: Sphinx "youtube" extension.
+Author-email: Chris Pickel <sfiera@gmail.com>
+Maintainer-email: "David A. Ham" <david.ham@imperial.ac.uk>
+Description-Content-Type: text/plain
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Environment :: Console
+Classifier: Environment :: Web Environment
+Classifier: Framework :: Sphinx :: Extension
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Topic :: Documentation
+Classifier: Topic :: Utilities
+Requires-Dist: Sphinx>=6.1
+Requires-Dist: requests
+Requires-Dist: nox ; extra == "dev"
+Requires-Dist: sphinx-copybutton ; extra == "doc"
+Requires-Dist: pydata-sphinx-theme ; extra == "doc"
+Requires-Dist: sphinx-design ; extra == "doc"
+Requires-Dist: pytest ; extra == "test"
+Requires-Dist: beautifulsoup4 ; extra == "test"
+Requires-Dist: pytest-regressions ; extra == "test"
+Requires-Dist: pytest-cov ; extra == "test"
+Project-URL: Homepage, https://github.com/sphinx-contrib/youtube
+Provides-Extra: dev
+Provides-Extra: doc
+Provides-Extra: test
+
+This package contains the youtube Sphinx extension.
+The extension defines the directives, "youtube" and "vimeo", for embedding
+YouTube, Vimeo and Peertube videos, respectively.
