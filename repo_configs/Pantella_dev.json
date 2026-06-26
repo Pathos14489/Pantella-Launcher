@@ -47,6 +47,18 @@
 			"name": "PantellaNV",
 			"patches": [],
 			"repo": "Pathos14489/PantellaNV"
+		},
+		{
+			"blacklist": [],
+			"branch": "main",
+			"commit": "",
+			"dir_suffix": "_dev",
+			"games": [
+				"oblivion"
+			],
+			"name": "PantellaOB",
+			"patches": [],
+			"repo": "Pathos14489/PantellaOB"
 		}
 	],
 	"python_binary": "./python-3.10.11-embed/python.exe",
