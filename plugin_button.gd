@@ -103,13 +103,12 @@ func _on_install_button_pressed():
 	var mod_manager_dir = DirAccess.open(mod_organizer_path)
 	if !mod_manager_dir.dir_exists(plugin_path):
 		mod_manager_dir.make_dir(plugin_path)
-	source_path = "\""+source_path+"/\""
 	
 	var command = [
 		"Copy-Item",
 		"-Recurse",
-		"\"" + source_path + "\"",
-		"\"\"" + plugin_path + "\"\""
+		"\"\"" + source_path.replace(" ","` ") + "\"\"",
+		"\"\"" + plugin_path.replace(" ","` ") + "\"\""
 	]
 	
 	print("Executing command in powershell: " + " ".join(command))
@@ -119,8 +118,8 @@ func _on_install_button_pressed():
 	
 	command = [
 		"Copy-Item",
-		"\"\"" + plugin_commit_history_path + "\"\"",
-		"\"\"" + str(plugin_path+get_plugin_file_name()) + "/commit_history.json" + "\"\""
+		"\"\"" + plugin_commit_history_path.replace(" ","` ") + "\"\"",
+		"\"\"" + str(plugin_path+get_plugin_file_name()).replace(" ","` ") + "/commit_history.json" + "\"\""
 	]
 	
 	# copy commit history
