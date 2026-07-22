@@ -14,10 +14,10 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 
 [application]
 
-config/name="Pantella Launcher - v0.0.7"
+config/name="Pantella Launcher - v0.1.0"
 config/description="Launcher for easily running Pantella and Mantellas development branch and it's related forks from source in it's proper dev/production ready environment with the correct plugin swapped out as needed."
 run/main_scene="res://main.tscn"
-config/features=PackedStringArray("4.6", "Forward Plus")
+config/features=PackedStringArray("4.7", "Forward Plus")
 run/low_processor_mode=true
 boot_splash/bg_color=Color(0.0980392, 0.0980392, 0.0980392, 1)
 boot_splash/show_image=false

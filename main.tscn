@@ -433,7 +433,7 @@ offset_left = -93.0
 offset_top = -23.9999
 grow_horizontal = 0
 grow_vertical = 0
-text = "v0.0.7 alpha"
+text = "v0.1.0 beta"
 
 [node name="PluginDirDialog" type="FileDialog" parent="." unique_id=1017438644]
 title = "Open a Directory"
