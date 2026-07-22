@@ -19,6 +19,8 @@
 	"entry_point": "main.py",
 	"file_name": "Pantella_dev.json",
 	"install_requirements": true,
+	"install_llama-cpp-python": true,
+	"install_cuda_torch": true,
 	"last_checked_for_updates": 0.0,
 	"last_updated": 0.0,
 	"name": "Pantella (beta)",

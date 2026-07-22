@@ -16,6 +16,8 @@
 	"entry_point": "main.py",
 	"file_name": "Mantella.json",
 	"install_requirements": true,
+	"install_llama-cpp-python": false,
+	"install_cuda_torch": false,
 	"last_checked_for_updates": 0,
 	"last_updated": 0,
 	"name": "Mantella",

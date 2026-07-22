@@ -94,6 +94,7 @@ try:
                 requirements_filename = "win_requirements.txt"
                 launcher_logging.info("Found win_requirements.txt, using that instead of requirements.txt")
 
+
         if repo_json["install_requirements"]:
             with open(os.path.join(repo_path, requirements_filename), "rb") as f:
                 requirements_hash = hashlib.md5(f.read()).hexdigest()
@@ -147,17 +148,82 @@ try:
 
 
         # Start the repository by running whatever entry point is specified to be as a cmd line arg
-        if needs_install and repo_json["install_requirements"]:
-            command_script = f"\"{python_path}\" -m pip install -r \"{os.path.join(repo_path, requirements_filename)}\" --force-reinstall"
-            launcher_logging.info(command_script)
-            return_code = os.system('"' + command_script + '"')
-            if return_code != 0:
-                launcher_logging.error("Failed to install requirements")
-                input("Press enter to exit...")
-                raise Exception("Failed to install requirements")
-            repo_json["requirements_hash"] = requirements_hash
-            with open(repo_config_path, "w") as f:
-                json.dump(repo_json, f, indent=4)
+        if needs_install:
+            installed_requirements = False
+            installed_torch = False
+            installed_llama_cpp_python = False
+            if repo_json["install_requirements"]:
+                command_script = f"\"{python_path}\" -m pip install -r \"{os.path.join(repo_path, requirements_filename)}\" --force-reinstall"
+                launcher_logging.info(command_script)
+                return_code = os.system('"' + command_script + '"')
+                if return_code != 0:
+                    launcher_logging.error("Failed to install requirements")
+                    input("Press enter to exit...")
+                    raise Exception("Failed to install requirements")
+                installed_requirements = True
+
+            if repo_json.get("install_cuda_torch", False):
+                cuda_torch_requirements_filename = "cuda_torch_requirements.txt"
+                if os.path.exists(os.path.join(repo_path, cuda_torch_requirements_filename)):
+                    torch_command_script = f"\"{python_path}\" -m pip install -r \"{os.path.join(repo_path, cuda_torch_requirements_filename)}\" --force-reinstall --no-deps --no-cache-dir --upgrade"
+                    launcher_logging.info(torch_command_script)
+                    return_code = os.system('"' + torch_command_script + '"')
+                    if return_code != 0:
+                        launcher_logging.error("Failed to install CUDA torch requirements")
+                        input("Press enter to exit...")
+                        raise Exception("Failed to install CUDA torch requirements")
+                    installed_torch = True
+                else:
+                    launcher_logging.error("install_cuda_torch is set to true, but cuda_torch_requirements.txt not found in repository, cannot install CUDA torch requirements")
+                    input("Press enter to exit...")
+                    raise Exception("install_cuda_torch is set to true, but cuda_torch_requirements.txt not found in repository, cannot install CUDA torch requirements")
+            else:
+                launcher_logging.info("install_cuda_torch is set to false, skipping installation of CUDA torch requirements")
+                installed_torch = True # If we don't need to install it, we can consider it installed
+
+            # Windows
+            if repo_json.get("install_llama-cpp-python", False) and os.name == 'nt':
+                # Check for llama_cpp_python_wheels.json in repo dir
+                llama_cpp_python_wheels_path = os.path.join(repo_path, "llama_cpp_python_wheels.json")
+                if not os.path.exists(llama_cpp_python_wheels_path):
+                    launcher_logging.error("llama_cpp_python_wheels.json not found in repository, cannot install llama-cpp-python")
+                    input("Press enter to exit...")
+                    raise Exception("llama_cpp_python_wheels.json not found in repository, cannot install llama-cpp-python")
+                launcher_logging.info("Found llama_cpp_python_wheels.json, installing llama-cpp-python")
+                with open(llama_cpp_python_wheels_path, "r") as f:
+                    llama_cpp_python_wheels = json.load(f)
+                # Get the correct wheel for the current cuda version
+                import torch # Only import if we need to install llama-cpp-python, since torch is needed to determine the correct wheel to install
+                cuda_version = torch.version.cuda
+                cuda_slug = None if cuda_version is None else "cu" + cuda_version.replace(".", "")
+                wheel_url = llama_cpp_python_wheels.get(cuda_slug, None)
+                if wheel_url is None:
+                    launcher_logging.error("No wheel found for current cuda version: " + str(cuda_version) + ", cannot install llama-cpp-python! Please reach out for support, this is not something you can fix or your fault!")
+                    input("Press enter to exit...")
+                    raise Exception("No wheel found for current platform and python version, cannot install llama-cpp-python")
+                wheel_install_command = f"\"{python_path}\" -m pip install --force-reinstall \"{wheel_url}\" --no-deps --no-cache-dir --upgrade"
+                launcher_logging.info(wheel_install_command)
+                return_code = os.system('"' + wheel_install_command + '"')
+                if return_code != 0:
+                    launcher_logging.error("Failed to install llama-cpp-python - local inference not available -- please reach out for support, this is not something you can fix or your fault!")
+                else:
+                    launcher_logging.info("Successfully installed llama-cpp-python")
+                    installed_llama_cpp_python = True
+            else:
+                launcher_logging.info("install_llama-cpp-python is set to false or not on Windows, skipping installation of llama-cpp-python")
+                installed_llama_cpp_python = True # If we don't need to install it, we can consider it installed
+            
+            if installed_requirements and installed_torch and installed_llama_cpp_python:
+                # Update the requirements hash in the repo config file
+                repo_json["requirements_hash"] = requirements_hash
+                with open(repo_config_path, "w") as f:
+                    json.dump(repo_json, f, indent=4)
+                launcher_logging.info("Updated requirements hash in repo config file")
+
+                
+
+
+                        
         exec(open(os.path.join(repo_path, repo_json['entry_point'])).read())
         
         # command_script = python_path + " " + os.path.join(repo_path, repo_json["entry_point"] + " " + " ".join(repo_json["args"]))
